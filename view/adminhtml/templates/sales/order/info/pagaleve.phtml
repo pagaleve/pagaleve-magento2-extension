@@ -1,0 +1,33 @@
+<?php
+/**
+ * @var $block \Pagaleve\Payment\Block\Info\Pagaleve
+ */
+$order = $block->getOrder();
+?>
+<section class="admin__page-section order-view-billing-shipping">
+    <div class="admin__page-section-content">
+        <div class="admin__page-section-item order-payment-method pagaleve">
+            <div class="admin__page-section-item-title">
+                <span class="title"><?= $block->escapeHtml(__('Pagaleve')) ?></span>
+            </div>
+            <div class="admin__page-section-item-content">
+                <div class="order-payment-additional">
+                    <strong><?= __('Checkout ID') ?>: </strong><?= $order->getData('pagaleve_checkout_id') ?>
+                </div>
+                <div class="order-payment-additional">
+                    <strong><?= __('Payment ID') ?>: </strong><?= $order->getData('pagaleve_payment_id') ?>
+                </div>
+                <?php foreach ($order->getInvoiceCollection() as $invoice) :  ?>
+                    <div class="order-payment-additional">
+                        <strong><?= __('Capture ID') ?>: </strong><?= $invoice->getData('pagaleve_capture_id') ?>
+                    </div>
+                <?php endforeach;  ?>
+                <?php foreach ($order->getCreditmemosCollection() as $creditMemo) :  ?>
+                    <div class="order-payment-additional">
+                        <strong><?= __('Refund ID') ?>: </strong><?= $creditMemo->getData('pagaleve_refund_id') ?>
+                    </div>
+                <?php endforeach;  ?>
+            </div>
+        </div>
+    </div>
+</section>

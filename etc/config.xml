@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * @author      FCamara - Formação e Consultoria <contato@fcamara.com.br>
+ * @author      Guilherme Miguelete <guilherme.miguelete@fcamara.com.br>
+ * @license     Pagaleve Tecnologia Financeira | Copyright
+ * @copyright   2022 Pagaleve Tecnologia Financeira (http://www.pagaleve.com.br)
+ *
+ * @link        http://www.pagaleve.com.br
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+	<default>
+		<payment>
+			<pagaleve>
+                <active>1</active>
+				<model>Pagaleve\Payment\Model\Pagaleve</model>
+				<order_status>pending</order_status>
+				<title>Pagaleve</title>
+				<allowspecific>0</allowspecific>
+                <group>offline</group>
+                <instructions>instructions</instructions>
+                <sandbox_mode>1</sandbox_mode>
+                <payment_action>AUTH</payment_action>
+                <order_status_new>pending</order_status_new>
+                <order_status_processing>processing</order_status_processing>
+                <token_url>https://api.pagaleve.com.br/v1/authentication</token_url>
+                <token_url_sandbox>https://sandbox-api.pagaleve.io/v1/authentication</token_url_sandbox>
+                <token_username>guilherme.miguelete@fcamara.com.br</token_username>
+                <token_username_sandbox>guilherme.miguelete@fcamara.com.br</token_username_sandbox>
+                <token_password>A1s2d3@F</token_password>
+                <token_password_sandbox>A1s2d3@F</token_password_sandbox>
+                <checkout_url>https://api.pagaleve.com.br/v1/checkouts</checkout_url>
+                <checkout_url_sandbox>https://sandbox-api.pagaleve.io/v1/checkouts</checkout_url_sandbox>
+                <payment_url>https://api.pagaleve.com.br/v1/payments</payment_url>
+                <payment_url_sandbox>https://sandbox-api.pagaleve.io/v1/payments</payment_url_sandbox>
+                <capture_url>https://api.pagaleve.com.br/v1/payments/%s/capture</capture_url>
+                <capture_url_sandbox>https://sandbox-api.pagaleve.io/v1/payments/%s/capture</capture_url_sandbox>
+                <refund_url>https://api.pagaleve.com.br/v1/payments/%s/refund</refund_url>
+                <refund_url_sandbox>https://sandbox-api.pagaleve.io/v1/payments/%s/refund</refund_url_sandbox>
+                <sort_order>1</sort_order>
+			</pagaleve>
+		</payment>
+	</default>
+</config>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author      FCamara - Formação e Consultoria <contato@fcamara.com.br>
+ * @author      Guilherme Miguelete <guilherme.miguelete@fcamara.com.br>
+ * @license     Pagaleve Tecnologia Financeira | Copyright
+ * @copyright   2022 Pagaleve Tecnologia Financeira (http://www.pagaleve.com.br)
+ *
+ * @link        http://www.pagaleve.com.br
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="payment_pagaleve_instructions_config_provider" xsi:type="object">Pagaleve\Payment\Model\InstructionsConfigProvider</item>
+                <item name="payment_pagaleve_config_provider" xsi:type="object">Pagaleve\Payment\Model\PagaleveConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

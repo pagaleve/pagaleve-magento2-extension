@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="quote">
+        <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
+        <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
+    </table>
+    <table name="sales_order">
+        <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
+        <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
+    </table>
+
+    <table name="sales_invoice">
+        <column name="pagaleve_capture_id" nullable="true" xsi:type="varchar" comment="Pagaleve Capture ID" length="255"/>
+    </table>
+    <table name="sales_creditmemo">
+        <column name="pagaleve_refund_id" nullable="true" xsi:type="varchar" comment="Pagaleve Refund ID" length="255"/>
+    </table>
+
+    <table name="sales_order_grid">
+        <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
+        <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
+    </table>
+</schema>

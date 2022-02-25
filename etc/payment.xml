@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * @author      FCamara - Formação e Consultoria <contato@fcamara.com.br>
+ * @author      Guilherme Miguelete <guilherme.miguelete@fcamara.com.br>
+ * @license     Pagaleve Tecnologia Financeira | Copyright
+ * @copyright   2022 Pagaleve Tecnologia Financeira (http://www.pagaleve.com.br)
+ *
+ * @link        http://www.pagaleve.com.br
+ */
+-->
+<payment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Payment:etc/payment.xsd">
+	<groups>
+		<group id="offline">
+			<label>Offline Payment Methods</label>
+		</group>
+	</groups>
+	<methods>
+		<method name="pagaleve">
+			<allow_multiple_address>1</allow_multiple_address>
+		</method>
+	</methods>
+</payment>

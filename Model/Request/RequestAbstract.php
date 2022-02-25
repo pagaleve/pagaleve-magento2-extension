@@ -1,0 +1,117 @@
+<?php
+/**
+ * @author      FCamara - Formação e Consultoria <contato@fcamara.com.br>
+ * @author      Guilherme Miguelete <guilherme.miguelete@fcamara.com.br>
+ * @license     Pagaleve Tecnologia Financeira | Copyright
+ * @copyright   2022 Pagaleve Tecnologia Financeira (http://www.pagaleve.com.br)
+ *
+ * @link        http://www.pagaleve.com.br
+ */
+
+declare(strict_types=1);
+
+namespace Pagaleve\Payment\Model\Request;
+
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\HTTP\ZendClient;
+use Magento\Framework\HTTP\ZendClientFactory;
+use Magento\Framework\Math\Random;
+use Pagaleve\Payment\Helper\Config as HelperConfig;
+use Zend_Http_Client;
+use Magento\Framework\Serialize\Serializer\Json;
+
+class RequestAbstract
+{
+    /** @var json $json */
+    protected json $json;
+
+    /** @var ZendClientFactory $httpClientFactory */
+    protected ZendClientFactory $httpClientFactory;
+
+    /** @var HelperConfig $helperConfig */
+    protected HelperConfig $helperConfig;
+
+    /** @var Random $mathRandom */
+    protected Random $mathRandom;
+
+    /**
+     * @param ZendClientFactory $httpClientFactory
+     * @param Json $json
+     * @param HelperConfig $helperConfig
+     * @param Random $mathRandom
+     */
+    public function __construct(
+        ZendClientFactory $httpClientFactory,
+        json $json,
+        HelperConfig $helperConfig,
+        Random $mathRandom
+    ) {
+        $this->httpClientFactory = $httpClientFactory;
+        $this->json = $json;
+        $this->helperConfig = $helperConfig;
+        $this->mathRandom = $mathRandom;
+    }
+
+    /**
+     * @return string
+     * @throws \Zend_Http_Client_Exception
+     */
+    protected function getToken(): string
+    {
+        $client = $this->httpClientFactory->create();
+        $client->setUri($this->helperConfig->getTokenUrl());
+        $client->setConfig(['strict'=> false, 'timeout' => 4]);
+
+        $client->setHeaders(['content-type' => 'application/x-www-form-urlencoded']);
+        $client->setParameterPost('username', $this->helperConfig->getTokenUserName());
+        $client->setParameterPost('password', $this->helperConfig->getTokenPassword());
+        $client->setMethod(Zend_Http_Client::POST);
+
+        $request = $client->request();
+        if ($request->getStatus() == 200) {
+            $requestBody = $request->getbody();
+            $result = $this->json->unserialize($requestBody);
+            return $result['token'] ?? '';
+        }
+        return '';
+    }
+
+    /**
+     * @param $uri
+     * @return ZendClient
+     * @throws \Zend_Http_Client_Exception|LocalizedException
+     */
+    public function getClient($uri): ZendClient
+    {
+        $client = $this->httpClientFactory->create();
+        $client->seturi($uri);
+        $client->setconfig(['strict'=> false, 'timeout' => 6]);
+
+        $client->setheaders(
+            [
+                'Authorization' => 'Bearer ' . $this->getToken(),
+                'Idempotency-Key' => $this->generateUniqueToken()
+            ]
+        );
+
+        return $client;
+    }
+
+    /**
+     * @return string
+     * @throws LocalizedException
+     */
+    public function generateUniqueToken(): string
+    {
+        return $this->mathRandom->getUniqueHash();
+    }
+
+    /**
+     * @param $amount
+     * @return int
+     */
+    public function formatAmount($amount): int
+    {
+        return intval(round($amount)) * 100;
+    }
+}
