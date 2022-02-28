@@ -12,61 +12,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
 	<system>
 		<section id="payment" sortOrder="1000" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-			<!--
-            <group id="pagaleve" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-				<label>Pagaleve</label>
-				<field id="active" type="select" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-					<label>Enabled</label>
-					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-				</field>
-				<field id="title" type="text" sortOrder="20" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-					<label>Title</label>
-				</field>
-                <field id="sandbox_mode" type="select" sortOrder="21" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Sandbox Mode</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="payment_action" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Payment Action</label>
-                    <source_model>Pagaleve\Payment\Model\Config\Source\PaymentAction</source_model>
-                </field>
-                <field id="order_status_new" type="select" sortOrder="40" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Authorize Status</label>
-                    <source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>
-                    <depends>
-                        <field id="payment_action">AUTHORIZE</field>
-                    </depends>
-                </field>
-                <field id="order_status_processing" type="select" sortOrder="50" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Capture Status</label>
-                    <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
-                    <depends>
-                        <field id="payment_action">CAPTURE</field>
-                    </depends>
-                </field>
-                <field id="instructions" type="textarea" sortOrder="70" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Instructions</label>
-                </field>
-                <field id="token_url" type="text" sortOrder="80" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Token Endpoint</label>
-                </field>
-                <field id="token_username" type="text" sortOrder="90" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Token Username</label>
-                </field>
-                <field id="token_password" type="obscure" sortOrder="100" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Token Password</label>
-                </field>
-                <field id="checkout_url" type="text" sortOrder="110" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Checkout Endpoint</label>
-                </field>
-                <field id="payment_url" type="text" sortOrder="120" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Payment Endpoint</label>
-                </field>
-                <field id="sort_order" type="text" sortOrder="1000" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Sort Order</label>
-                </field>
-			</group>
-			!-->
             <group id="pagaleve" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label><![CDATA[<div class="pagaleve-payment-logo"></div><div class="pagaleve-payment-byline">Pagamento por parcelamento via PIX.<br/>Parcelamento em 4X via PIX.</div>]]></label>
                 <fieldset_css>complex pagaleve-payment-section</fieldset_css>
@@ -88,7 +33,7 @@
                         <config_path>payment/pagaleve/payment_action</config_path>
                     </field>
                     <field id="order_status_new" type="select" sortOrder="40" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Authorize Status</label>
+                        <label>Status</label>
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>
                         <depends>
                             <field id="payment_action">AUTH</field>
@@ -96,15 +41,16 @@
                         <config_path>payment/pagaleve/order_status_new</config_path>
                     </field>
                     <field id="order_status_processing" type="select" sortOrder="50" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Capture Status</label>
+                        <label>Status</label>
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
                         <depends>
                             <field id="payment_action">CAPTURE</field>
                         </depends>
                         <config_path>payment/pagaleve/order_status_processing</config_path>
                     </field>
-                    <field id="instructions" type="textarea" sortOrder="70" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Instructions</label>
+                    <field id="sort_order" type="text" sortOrder="1000" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Sort Order</label>
+                        <config_path>payment/pagaleve/sort_order</config_path>
                     </field>
                 </group>
                 <group id="credentials" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
@@ -114,107 +60,117 @@
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/pagaleve/sandbox_mode</config_path>
                     </field>
-                    <field id="token_url" type="text" sortOrder="80" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <field id="token_username" type="text" sortOrder="31" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Username</label>
+                        <depends>
+                            <field id="sandbox_mode">0</field>
+                        </depends>
+                        <config_path>payment/pagaleve/token_username</config_path>
+                    </field>
+                    <field id="token_username_sandbox" type="text" sortOrder="35" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Username</label>
+                        <depends>
+                            <field id="sandbox_mode">1</field>
+                        </depends>
+                        <config_path>payment/pagaleve/token_username_sandbox</config_path>
+                    </field>
+                    <field id="token_password" type="obscure" sortOrder="40" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Password</label>
+                        <depends>
+                            <field id="sandbox_mode">0</field>
+                        </depends>
+                        <config_path>payment/pagaleve/token_password</config_path>
+                    </field>
+                    <field id="token_password_sandbox" type="obscure" sortOrder="45" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Password</label>
+                        <depends>
+                            <field id="sandbox_mode">1</field>
+                        </depends>
+                        <config_path>payment/pagaleve/token_password_sandbox</config_path>
+                    </field>
+                    <field id="token_url" type="label" sortOrder="80" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Token Endpoint</label>
                         <depends>
                             <field id="sandbox_mode">0</field>
                         </depends>
                         <config_path>payment/pagaleve/token_url</config_path>
                     </field>
-                    <field id="token_url_sandbox" type="text" sortOrder="85" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Token Endpoint (Sandbox)</label>
+                    <field id="token_url_sandbox" type="label" sortOrder="85" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Token Endpoint</label>
                         <depends>
                             <field id="sandbox_mode">1</field>
                         </depends>
                         <config_path>payment/pagaleve/token_url_sandbox</config_path>
                     </field>
-                    <field id="token_username" type="text" sortOrder="90" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Token Username</label>
-                        <depends>
-                            <field id="sandbox_mode">0</field>
-                        </depends>
-                        <config_path>payment/pagaleve/token_username</config_path>
-                    </field>
-                    <field id="token_username_sandbox" type="text" sortOrder="95" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Token Username (Sandbox)</label>
-                        <depends>
-                            <field id="sandbox_mode">1</field>
-                        </depends>
-                        <config_path>payment/pagaleve/token_username_sandbox</config_path>
-                    </field>
-                    <field id="token_password" type="text" sortOrder="100" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Token Password</label>
-                        <depends>
-                            <field id="sandbox_mode">0</field>
-                        </depends>
-                        <config_path>payment/pagaleve/token_password</config_path>
-                    </field>
-                    <field id="token_password_sandbox" type="text" sortOrder="105" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Token Password (sandbox)</label>
-                        <depends>
-                            <field id="sandbox_mode">1</field>
-                        </depends>
-                        <config_path>payment/pagaleve/token_password_sandbox</config_path>
-                    </field>
-                    <field id="checkout_url" type="text" sortOrder="110" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <field id="checkout_url" type="label" sortOrder="110" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Checkout Endpoint</label>
                         <depends>
                             <field id="sandbox_mode">0</field>
                         </depends>
                         <config_path>payment/pagaleve/checkout_url</config_path>
                     </field>
-                    <field id="checkout_url_sandbox" type="text" sortOrder="115" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Checkout Endpoint (sandbox)</label>
+                    <field id="checkout_url_sandbox" type="label" sortOrder="115" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Checkout Endpoint</label>
                         <depends>
                             <field id="sandbox_mode">1</field>
                         </depends>
                         <config_path>payment/pagaleve/checkout_url_sandbox</config_path>
                     </field>
-                    <field id="payment_url" type="text" sortOrder="120" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <field id="payment_url" type="label" sortOrder="120" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Payment Endpoint</label>
                         <depends>
                             <field id="sandbox_mode">0</field>
                         </depends>
                         <config_path>payment/pagaleve/payment_url</config_path>
                     </field>
-                    <field id="payment_url_sandbox" type="text" sortOrder="130" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Payment Endpoint (sandbox)</label>
+                    <field id="payment_url_sandbox" type="label" sortOrder="130" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Payment Endpoint</label>
                         <depends>
                             <field id="sandbox_mode">1</field>
                         </depends>
                         <config_path>payment/pagaleve/payment_url_sandbox</config_path>
                     </field>
-                    <field id="capture_url" type="text" sortOrder="120" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <field id="capture_url" type="label" sortOrder="120" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Capture Endpoint</label>
                         <depends>
                             <field id="sandbox_mode">0</field>
                         </depends>
                         <config_path>payment/pagaleve/capture_url</config_path>
                     </field>
-                    <field id="capture_url_sandbox" type="text" sortOrder="130" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Capture Endpoint (sandbox)</label>
+                    <field id="capture_url_sandbox" type="label" sortOrder="130" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Capture Endpoint</label>
                         <depends>
                             <field id="sandbox_mode">1</field>
                         </depends>
                         <config_path>payment/pagaleve/capture_url_sandbox</config_path>
                     </field>
-                    <field id="refund_url" type="text" sortOrder="140" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <field id="refund_url" type="label" sortOrder="140" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Refund Endpoint</label>
                         <depends>
                             <field id="sandbox_mode">0</field>
                         </depends>
                         <config_path>payment/pagaleve/refund_url</config_path>
                     </field>
-                    <field id="refund_url_sandbox" type="text" sortOrder="150" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Refund Endpoint (sandbox)</label>
+                    <field id="refund_url_sandbox" type="label" sortOrder="150" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Refund Endpoint</label>
                         <depends>
                             <field id="sandbox_mode">1</field>
                         </depends>
                         <config_path>payment/pagaleve/refund_url_sandbox</config_path>
                     </field>
-                    <field id="sort_order" type="text" sortOrder="1000" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Sort Order</label>
-                        <config_path>payment/pagaleve/sort_order</config_path>
+                    <field id="release_url" type="label" sortOrder="160" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Release Endpoint</label>
+                        <depends>
+                            <field id="sandbox_mode">0</field>
+                        </depends>
+                        <config_path>payment/pagaleve/release_url</config_path>
+                    </field>
+                    <field id="release_url_sandbox" type="label" sortOrder="170" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Release Endpoint</label>
+                        <depends>
+                            <field id="sandbox_mode">1</field>
+                        </depends>
+                        <config_path>payment/pagaleve/release_url_sandbox</config_path>
                     </field>
                 </group>
             </group>

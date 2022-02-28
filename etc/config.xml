@@ -16,7 +16,7 @@
                 <active>1</active>
 				<model>Pagaleve\Payment\Model\Pagaleve</model>
 				<order_status>pending</order_status>
-				<title>Pagaleve</title>
+				<title>PIX 4x sem juros</title>
 				<allowspecific>0</allowspecific>
                 <group>offline</group>
                 <instructions>instructions</instructions>
@@ -38,6 +38,8 @@
                 <capture_url_sandbox>https://sandbox-api.pagaleve.io/v1/payments/%s/capture</capture_url_sandbox>
                 <refund_url>https://api.pagaleve.com.br/v1/payments/%s/refund</refund_url>
                 <refund_url_sandbox>https://sandbox-api.pagaleve.io/v1/payments/%s/refund</refund_url_sandbox>
+                <release_url>https://api.pagaleve.com.br/v1/payments/%s/release</release_url>
+                <release_url_sandbox>https://sandbox-api.pagaleve.io/v1/payments/%s/release</release_url_sandbox>
                 <sort_order>1</sort_order>
 			</pagaleve>
 		</payment>

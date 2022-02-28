@@ -16,44 +16,43 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Sales\Model\Order\Invoice;
+use Magento\Sales\Model\Order\Creditmemo;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
-use Pagaleve\Payment\Model\Config\Source\PaymentAction;
 use Pagaleve\Payment\Model\Pagaleve;
-use Pagaleve\Payment\Model\Request\Payment\CaptureRequest;
+use Pagaleve\Payment\Model\Request\Payment\RefundRequest;
 
-class InvoicePay implements ObserverInterface
+class CreditMemoRefund implements ObserverInterface
 {
     /** @var HelperConfig $helperConfig */
     protected HelperConfig $helperConfig;
 
-    /** @var CaptureRequest $captureRequest */
-    private CaptureRequest $captureRequest;
+    /** @var RefundRequest $refundRequest */
+    private RefundRequest $refundRequest;
 
     /**
      * @param HelperConfig $helperConfig
-     * @param CaptureRequest $captureRequest
+     * @param RefundRequest $refundRequest
      */
-    public function __construct(HelperConfig $helperConfig, CaptureRequest $captureRequest)
+    public function __construct(HelperConfig $helperConfig, RefundRequest $refundRequest)
     {
         $this->helperConfig = $helperConfig;
-        $this->captureRequest = $captureRequest;
+        $this->refundRequest = $refundRequest;
     }
 
     /**
      * Update inviter balance if possible
      *
      * @param Observer $observer
-     * @return InvoicePay
+     * @return CreditMemoRefund
      * @throws LocalizedException
      */
     public function execute(Observer $observer)
     {
-        /* @var $invoice Invoice */
-        $invoice = $observer->getEvent()->getData('invoice');
-        $order = $invoice->getOrder();
+        /* @var $creditMemo Creditmemo */
+        $creditMemo = $observer->getEvent()->getData('creditmemo');
+        $order = $creditMemo->getOrder();
 
-        if ($this->helperConfig->getPaymentAction() == PaymentAction::AUTHORIZE_AND_CAPTURE) {
+        if ($order->canCreditmemo()) {
             return $this;
         }
 
@@ -62,14 +61,15 @@ class InvoicePay implements ObserverInterface
         }
 
         try {
-            $captureData = $this->captureRequest->create(
+            $captureData = $this->refundRequest->create(
                 $order->getData('pagaleve_payment_id'),
-                $order->getGrandTotal(),
-                $invoice->getGrandTotal()
+                $creditMemo->getGrandTotal(),
+                'REQUESTED_BY_CUSTOMER',
+                $creditMemo->getCustomerNote()
             );
 
             if (isset($captureData['id']) && $captureData['id']) {
-                $invoice->setData('pagaleve_capture_id', $captureData['id']);
+                $creditMemo->setData('pagaleve_refund_id', $captureData['id']);
             }
 
         } catch (AlreadyExistsException|LocalizedException|\Zend_Http_Client_Exception $e) {

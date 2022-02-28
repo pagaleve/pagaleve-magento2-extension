@@ -20,8 +20,6 @@ use Magento\Framework\Message\ManagerInterface;
 use Pagaleve\Payment\Helper\Data as HelperData;
 use Pagaleve\Payment\Model\Request\PaymentRequest;
 
-
-
 class Approve implements HttpGetActionInterface
 {
     /**
@@ -96,6 +94,5 @@ class Approve implements HttpGetActionInterface
             $resultRedirect->setUrl($this->helperData->getCheckoutPaymentUrl());
             return $resultRedirect;
         }
-
     }
 }

@@ -12,29 +12,12 @@ declare(strict_types=1);
 
 namespace Pagaleve\Payment\Block\Info;
 
-use Magento\Framework\Registry;
-use Magento\Framework\View\Element\Template;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Block\Info;
+use Magento\Sales\Model\Order;
 
 class Pagaleve extends Info
 {
-    /**
-     * Core registry
-     *
-     * @var ?Registry
-     */
-    protected ?Registry $_coreRegistry = null;
-
-    public function __construct(
-        Template\Context $context,
-        Registry $registry,
-        array $data = []
-    )
-    {
-        parent::__construct($context, $data);
-        $this->_coreRegistry = $registry;
-    }
-
     /**
      * @var string
      */
@@ -43,30 +26,11 @@ class Pagaleve extends Info
     /**
      * Retrieve order model object
      *
-     * @return \Magento\Sales\Model\Order
+     * @return Order
+     * @throws LocalizedException
      */
     public function getOrder()
     {
         return $this->getInfo()->getOrder();
-    }
-
-    /**
-     * Retrieve invoice model instance
-     *
-     * @return \Magento\Sales\Model\Order\Invoice
-     */
-    public function getInvoice()
-    {
-        return $this->_coreRegistry->registry('current_invoice');
-    }
-
-    /**
-     * Retrieve creditmemo model instance
-     *
-     * @return \Magento\Sales\Model\Order\Creditmemo
-     */
-    public function getCreditmemo()
-    {
-        return $this->_coreRegistry->registry('current_creditmemo');
     }
 }

@@ -6,7 +6,11 @@
         <observer name="pagaleve_sales_order_invoice_pay" instance="Pagaleve\Payment\Observer\InvoicePay" />
     </event>
     <event name="sales_order_creditmemo_refund">
-        <observer name="pagaleve_sales_order_creditmemo_refund" instance="Pagaleve\Payment\Observer\Refund" />
+        <observer name="pagaleve_sales_order_creditmemo_refund" instance="Pagaleve\Payment\Observer\CreditMemoRefund" />
+    </event>
+
+    <event name="order_cancel_after">
+        <observer name="pagaleve_order_cancel_after" instance="Pagaleve\Payment\Observer\OrderCancel" />
     </event>
 
 </config>

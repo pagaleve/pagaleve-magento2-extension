@@ -14,9 +14,6 @@ namespace Pagaleve\Payment\Model\Config\Source;
 
 use Magento\Framework\Data\OptionSourceInterface;
 
-/**
- * Class PaymentAction
- */
 class PaymentAction implements OptionSourceInterface
 {
     const AUTHORIZE = 'AUTH';

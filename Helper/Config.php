@@ -44,6 +44,9 @@ class Config extends AbstractHelper
     public const PAYMENT_REFUND_URL = 'payment/pagaleve/refund_url';
     public const PAYMENT_REFUND_URL_SANDBOX = 'payment/pagaleve/refund_url_sandbox';
 
+    public const PAYMENT_RELEASE_URL = 'payment/pagaleve/release_url';
+    public const PAYMENT_RELEASE_URL_SANDBOX = 'payment/pagaleve/release_url_sandbox';
+
     public const PAYMENT_ACTION = 'payment/pagaleve/payment_action';
 
     public const PAYMENT_STATUS_NEW = 'payment/pagaleve/order_status_new';
@@ -138,6 +141,16 @@ class Config extends AbstractHelper
     {
         return $this->getStoreConfig(
             $this->sandboxMode() ? self::PAYMENT_REFUND_URL_SANDBOX : self::PAYMENT_REFUND_URL
+        );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentReleaseUrl()
+    {
+        return $this->getStoreConfig(
+            $this->sandboxMode() ? self::PAYMENT_RELEASE_URL_SANDBOX : self::PAYMENT_RELEASE_URL
         );
     }
 

@@ -23,7 +23,7 @@ use Pagaleve\Payment\Helper\Data as HelperData;
 use Zend_Http_Client;
 use Pagaleve\Payment\Model\Request\RequestAbstract;
 
-class RefundRequest extends RequestAbstract
+class ReleaseRequest extends RequestAbstract
 {
     /** @var HelperData $helperData */
     protected HelperData $helperData;
@@ -58,18 +58,16 @@ class RefundRequest extends RequestAbstract
     /**
      * @param $paymentId
      * @param $amount
-     * @param $reason
-     * @param $description
      * @return array
      * @throws LocalizedException
      * @throws \Zend_Http_Client_Exception
      */
-    public function create($paymentId, $amount, $reason, $description): array
+    public function create($paymentId, $amount): array
     {
-        $uri = sprintf($this->helperConfig->getPaymentRefundUrl(), $paymentId);
+        $uri = sprintf($this->helperConfig->getPaymentReleaseUrl(), $paymentId);
 
         $client = $this->getClient($uri);
-        $body = $this->json->serialize($this->prepare($amount, $reason, $description));
+        $body = $this->json->serialize($this->prepare($amount));
 
         $client->setrawdata($body, 'application/json');
         $client->setmethod(Zend_Http_Client::POST);
@@ -104,16 +102,12 @@ class RefundRequest extends RequestAbstract
 
     /**
      * @param $amount
-     * @param $reason
-     * @param $description
      * @return array
      */
-    protected function prepare($amount, $reason, $description) : array
+    protected function prepare($amount) : array
     {
         return [
-            'amount' => $this->formatAmount($amount),
-            'reason' => $reason,
-            'description' => $description
+            'amount' => $this->formatAmount($amount)
         ];
     }
 }

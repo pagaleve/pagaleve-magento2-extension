@@ -4,9 +4,16 @@
         <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
         <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
     </table>
+
     <table name="sales_order">
         <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
         <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
+        <column name="pagaleve_release_id" nullable="true" xsi:type="varchar" comment="Pagaleve Release ID" length="255"/>
+    </table>
+    <table name="sales_order_grid">
+        <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
+        <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
+        <column name="pagaleve_release_id" nullable="true" xsi:type="varchar" comment="Pagaleve Release ID" length="255"/>
     </table>
 
     <table name="sales_invoice">
@@ -16,8 +23,4 @@
         <column name="pagaleve_refund_id" nullable="true" xsi:type="varchar" comment="Pagaleve Refund ID" length="255"/>
     </table>
 
-    <table name="sales_order_grid">
-        <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
-        <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
-    </table>
 </schema>

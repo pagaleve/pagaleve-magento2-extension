@@ -37,8 +37,7 @@ class Pagaleve extends AbstractMethod
      */
     public function isAvailable(
         CartInterface $quote = null
-    ): bool
-    {
+    ): bool {
         return parent::isAvailable($quote);
     }
 }

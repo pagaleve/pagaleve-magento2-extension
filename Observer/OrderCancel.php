@@ -16,43 +16,51 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Sales\Model\Order\Creditmemo;
+use Magento\Sales\Model\Order;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Model\Pagaleve;
-use Pagaleve\Payment\Model\Request\Payment\RefundRequest;
+use Pagaleve\Payment\Model\Request\Payment\ReleaseRequest;
+use Magento\Sales\Api\OrderRepositoryInterface;
 
-class Refund implements ObserverInterface
+class OrderCancel implements ObserverInterface
 {
     /** @var HelperConfig $helperConfig */
     protected HelperConfig $helperConfig;
 
-    /** @var RefundRequest $refundRequest */
-    private RefundRequest $refundRequest;
+    /** @var ReleaseRequest $releaseRequest */
+    private ReleaseRequest $releaseRequest;
+
+    /** @var OrderRepositoryInterface $orderRepository */
+    private OrderRepositoryInterface $orderRepository;
 
     /**
      * @param HelperConfig $helperConfig
-     * @param RefundRequest $refundRequest
+     * @param ReleaseRequest $releaseRequest
+     * @param OrderRepositoryInterface $orderRepository
      */
-    public function __construct(HelperConfig $helperConfig, RefundRequest $refundRequest)
-    {
+    public function __construct(
+        HelperConfig $helperConfig,
+        ReleaseRequest $releaseRequest,
+        OrderRepositoryInterface $orderRepository
+    ) {
         $this->helperConfig = $helperConfig;
-        $this->refundRequest = $refundRequest;
+        $this->releaseRequest = $releaseRequest;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
      * Update inviter balance if possible
      *
      * @param Observer $observer
-     * @return Refund
+     * @return OrderCancel
      * @throws LocalizedException
      */
     public function execute(Observer $observer)
     {
-        /* @var $creditMemo Creditmemo */
-        $creditMemo = $observer->getEvent()->getData('creditmemo');
-        $order = $creditMemo->getOrder();
+        /* @var $order Order */
+        $order = $observer->getEvent()->getData('order');
 
-        if ($order->canCreditmemo()) {
+        if ($order->canCancel()) {
             return $this;
         }
 
@@ -61,15 +69,14 @@ class Refund implements ObserverInterface
         }
 
         try {
-            $captureData = $this->refundRequest->create(
+            $releaseData = $this->releaseRequest->create(
                 $order->getData('pagaleve_payment_id'),
-                $creditMemo->getGrandTotal(),
-                'REQUESTED_BY_CUSTOMER',
-                $creditMemo->getCustomerNote()
+                $order->getGrandTotal()
             );
 
-            if (isset($captureData['id']) && $captureData['id']) {
-                $creditMemo->setData('pagaleve_refund_id', $captureData['id']);
+            if (isset($releaseData['id']) && $releaseData['id']) {
+                $order->setData('pagaleve_release_id', $releaseData['id']);
+                $this->orderRepository->save($order);
             }
 
         } catch (AlreadyExistsException|LocalizedException|\Zend_Http_Client_Exception $e) {
@@ -79,5 +86,4 @@ class Refund implements ObserverInterface
 
         return $this;
     }
-
 }

@@ -24,8 +24,6 @@ use Magento\Sales\Model\Service\InvoiceService;
 use Magento\Framework\DB\Transaction;
 use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
 use Magento\Sales\Api\OrderRepositoryInterface;
-
-
 use Magento\Checkout\Model\Session as CheckoutSession;
 
 class Data extends AbstractHelper
@@ -164,7 +162,6 @@ class Data extends AbstractHelper
         $order->addStatusHistoryComment(
             __('Notified customer about invoice creation #%1.', $invoice->getId())
         )->setIsCustomerNotified(true)->save();
-
     }
 
     /**
