@@ -1,16 +1,25 @@
 {
-    "name": "pagaleve/module-payment",
+    "name": "pagaleve/pagaleve-magento2-extension",
     "description": "2",
     "type": "magento2-module",
-    "license": "GPL-3.0",
+    "version": "1.0.0",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
     "authors": [
         {
             "name": "Pagaleve Magento 2 Module",
             "email": "contato@pagaleve.com.br"
+        },
+        {
+            "name": "Guilherme Miguelete",
+            "email": "guilherme.miguelete@fcamara.com.br"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "php": "~7.3.0"
+    },
     "autoload": {
         "files": [
             "registration.php"
