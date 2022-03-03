@@ -153,7 +153,7 @@ class CheckoutRequest extends RequestAbstract
             'shopper' => [
                 'first_name' => $quote->getCustomerFirstname(),
                 'last_name' => $quote->getCustomerLastname(),
-                'phone' => $billingAddress->getTelephone(),
+                'phone' => $this->formatPhone($billingAddress->getTelephone()),
                 'email' => $quote->getCustomerEmail(),
                 'cpf' => $quote->getCustomerTaxvat(),
                 'billing_address' => [
@@ -165,7 +165,7 @@ class CheckoutRequest extends RequestAbstract
                     'number' => $billingAddress->getStreetLine(2),
                     'neighborhood' => $billingAddress->getStreetLine(3),
                     'complement' => $billingAddress->getStreetLine(4),
-                    'phone_number' => $billingAddress->getTelephone()
+                    'phone_number' => $this->formatPhone($billingAddress->getTelephone())
                 ]
             ],
             'webhook_url' => $this->urlBuilder->getUrl('pagaleve/webhook'),
