@@ -1,6 +1,7 @@
 {
-    "name": "pagaleve/pagaleve-magento2-module",
+    "name": "pagaleve/pagaleve-magento2-extension",
     "description": "2",
+    "homepage": "https://github.com/pagaleve/pagaleve-magento2-extension",
     "type": "magento2-module",
     "version": "1.0.0",
     "minimum-stability": "dev",
