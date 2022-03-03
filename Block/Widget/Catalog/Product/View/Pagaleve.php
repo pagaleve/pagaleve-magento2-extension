@@ -55,9 +55,9 @@ class Pagaleve extends Template implements BlockInterface
     }
 
     /**
-     * @return float
+     * @return string
      */
-    public function getInstalmentPrice(): float
+    public function getInstalmentPrice(): string
     {
         $instalmentPrice = $this->getProduct()->getFinalPrice() / 4;
         return $this->pricingHelper->currency($instalmentPrice);

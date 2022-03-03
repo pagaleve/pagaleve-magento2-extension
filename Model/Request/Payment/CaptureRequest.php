@@ -21,6 +21,7 @@ use Magento\Sales\Model\Order\Invoice;
 use Magento\Sales\Model\ResourceModel\Order\Invoice as ResourceInvoice;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Helper\Data as HelperData;
+use Pagaleve\Payment\Logger\Logger;
 use Zend_Http_Client;
 use Pagaleve\Payment\Model\Request\RequestAbstract;
 
@@ -35,6 +36,9 @@ class CaptureRequest extends RequestAbstract
     /** @var Invoice $invoice */
     protected Invoice $invoice;
 
+    /** @var Logger $logger */
+    private Logger $logger;
+
     /**
      * @param ZendClientFactory $httpClientFactory
      * @param Json $json
@@ -42,6 +46,7 @@ class CaptureRequest extends RequestAbstract
      * @param Random $mathRandom
      * @param HelperData $helperData
      * @param ResourceInvoice $resourceInvoice
+     * @param Logger $logger
      */
     public function __construct(
         ZendClientFactory $httpClientFactory,
@@ -49,11 +54,13 @@ class CaptureRequest extends RequestAbstract
         HelperConfig $helperConfig,
         Random $mathRandom,
         HelperData $helperData,
-        ResourceInvoice $resourceInvoice
+        ResourceInvoice $resourceInvoice,
+        Logger $logger
     ) {
         parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom);
         $this->helperData = $helperData;
         $this->resourceInvoice = $resourceInvoice;
+        $this->logger = $logger;
     }
 
     /**
@@ -77,6 +84,10 @@ class CaptureRequest extends RequestAbstract
 
         $request = $client->request();
         $requestBody = $request->getbody();
+
+        $this->logger->info(
+            'CaptureRequest: ' . $client->getUri() . ' - ' . $requestBody
+        );
 
         if ($request->getstatus() == 200) {
             return $this->success($requestBody);

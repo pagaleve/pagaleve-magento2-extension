@@ -22,6 +22,7 @@ use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\ResourceModel\Quote as ResourceQuote;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Helper\Data as HelperData;
+use Pagaleve\Payment\Logger\Logger;
 use Zend_Http_Client;
 
 class PaymentRequest extends RequestAbstract
@@ -36,6 +37,9 @@ class PaymentRequest extends RequestAbstract
      */
     protected ResourceQuote $resourceQuote;
 
+    /** @var Logger $logger */
+    private Logger $logger;
+
     /**
      * @param ZendClientFactory $httpClientFactory
      * @param Json $json
@@ -43,6 +47,7 @@ class PaymentRequest extends RequestAbstract
      * @param Random $mathRandom
      * @param HelperData $helperData
      * @param ResourceQuote $resourceQuote
+     * @param Logger $logger
      */
     public function __construct(
         ZendClientFactory $httpClientFactory,
@@ -50,11 +55,13 @@ class PaymentRequest extends RequestAbstract
         HelperConfig $helperConfig,
         Random $mathRandom,
         HelperData $helperData,
-        ResourceQuote $resourceQuote
+        ResourceQuote $resourceQuote,
+        Logger $logger
     ) {
         parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom);
         $this->helperData = $helperData;
         $this->resourceQuote = $resourceQuote;
+        $this->logger = $logger;
     }
 
     /**
@@ -73,6 +80,10 @@ class PaymentRequest extends RequestAbstract
 
         $request = $client->request();
         $requestBody = $request->getbody();
+
+        $this->logger->info(
+            'PaymentRequest: ' . $client->getUri() . ' - ' . $requestBody
+        );
 
         if ($request->getstatus() == 201) {
             return $this->success($requestBody);

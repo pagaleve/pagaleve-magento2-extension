@@ -163,6 +163,14 @@ class Config extends AbstractHelper
     }
 
     /**
+     * @return bool
+     */
+    public function enabledLog()
+    {
+        return true;
+    }
+
+    /**
      * @param $path
      * @param $storeCode
      * @return mixed
