@@ -52,25 +52,23 @@ class CreditMemoRefund implements ObserverInterface
         $creditMemo = $observer->getEvent()->getData('creditmemo');
         $order = $creditMemo->getOrder();
 
-        if ($order->canCreditmemo()) {
-            return $this;
-        }
-
         if ($order->getPayment()->getMethod() != Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE) {
             return $this;
         }
 
         try {
-            $captureData = $this->refundRequest->create(
+            $refundData = $this->refundRequest->create(
                 $order->getData('pagaleve_payment_id'),
                 $creditMemo->getGrandTotal(),
                 'REQUESTED_BY_CUSTOMER',
                 $creditMemo->getCustomerNote()
             );
 
-            if (isset($captureData['id']) && $captureData['id']) {
-                $creditMemo->setData('pagaleve_refund_id', $captureData['id']);
+            if (isset($refundData['id']) && $refundData['id']) {
+                $creditMemo->setData('pagaleve_refund_id', $refundData['id']);
             }
+
+            $creditMemo->save();
 
         } catch (AlreadyExistsException|LocalizedException|\Zend_Http_Client_Exception $e) {
             throw new LocalizedException(__($e->getMessage()));

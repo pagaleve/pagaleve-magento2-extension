@@ -25,6 +25,7 @@ use Magento\Framework\DB\Transaction;
 use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Checkout\Model\Session as CheckoutSession;
+use Pagaleve\Payment\Model\Pagaleve;
 
 class Data extends AbstractHelper
 {
@@ -108,6 +109,16 @@ class Data extends AbstractHelper
     {
 
         $quote = $this->checkoutSession->getQuote();
+
+        $quote->setPaymentMethod(Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE);
+        $quote->getPayment()->importData(['method' => Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE]);
+        $quote->setData('trigger_recollect', 1)->setTotalsCollectedFlag(true);
+        $quote->collectTotals()->save();
+
+        if ($checkoutData['amount'] != $this->formatAmount($quote->getGrandTotal())) {
+            return 0;
+        }
+
         $order = $this->quoteManagement->submit($quote);
 
         $order->setEmailSent(0);
@@ -184,5 +195,23 @@ class Data extends AbstractHelper
     public function getCheckoutPaymentUrl(): string
     {
         return rtrim($this->urlBuilder->getUrl('checkout#payment'), '/');
+    }
+
+    /**
+     * @param $amount
+     * @return int
+     */
+    public function formatAmount($amount): int
+    {
+        return intval($this->onlyNumbers($amount)) * 100;
+    }
+
+    /**
+     * @param $string
+     * @return array|string|string[]|null
+     */
+    protected function onlyNumbers($string)
+    {
+        return preg_replace('/[^0-9.]+/', '', $string);
     }
 }

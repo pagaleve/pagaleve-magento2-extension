@@ -85,7 +85,7 @@ class RequestAbstract
     {
         $client = $this->httpClientFactory->create();
         $client->seturi($uri);
-        $client->setconfig(['strict'=> false, 'timeout' => 6]);
+        $client->setconfig(['strict'=> false, 'timeout' => 10]);
 
         $client->setheaders(
             [
@@ -107,15 +107,6 @@ class RequestAbstract
     }
 
     /**
-     * @param $amount
-     * @return int
-     */
-    public function formatAmount($amount): int
-    {
-        return intval(round($amount)) * 100;
-    }
-
-    /**
      * @param $phone
      * @return mixed|string
      */
@@ -128,5 +119,23 @@ class RequestAbstract
             return '('.$matches[1].')'.$matches[2].'-'.$matches[3];
         }
         return $phone;
+    }
+
+    /**
+     * @param $amount
+     * @return int
+     */
+    public function formatAmount($amount): int
+    {
+        return intval($this->onlyNumbers($amount)) * 100;
+    }
+
+    /**
+     * @param $string
+     * @return array|string|string[]|null
+     */
+    protected function onlyNumbers($string)
+    {
+        return preg_replace('/[^0-9.]+/', '', $string);
     }
 }

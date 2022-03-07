@@ -24,4 +24,9 @@
         </arguments>
     </type>
 
+    <type name="Magento\Sales\Block\Adminhtml\Order\Creditmemo\View">
+        <plugin disabled="false" name="Pagaleve_Payment_Plugin_Adminhtml_Order_View" sortOrder="10" type="Pagaleve\Payment\Plugin\CreditmemoViewAddButton"/>
+    </type>
+
+
 </config>

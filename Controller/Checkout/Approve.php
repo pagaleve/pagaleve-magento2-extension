@@ -81,6 +81,7 @@ class Approve implements HttpGetActionInterface
 
             $orderId = $this->helperData->createOrder($checkoutData);
             if ($orderId >= 1) {
+                $this->messageManager->addErrorMessage(__('Erro ao finalizar pedido, tente novamente.'));
                 $resultRedirect->setPath('checkout/onepage/success');
                 return $resultRedirect;
             }
