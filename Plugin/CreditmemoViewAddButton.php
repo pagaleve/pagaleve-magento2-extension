@@ -2,8 +2,11 @@
 
 namespace Pagaleve\Payment\Plugin;
 
+use Magento\Backend\Model\View\Result\Redirect;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Block\Adminhtml\Order\Creditmemo\View;
+use Magento\Sales\Model\OrderRepository;
+use Pagaleve\Payment\Model\Pagaleve;
 
 /**
  * Class View
@@ -16,12 +19,17 @@ class CreditmemoViewAddButton
     /** @var CreditmemoRepositoryInterface $creditMemoRepository */
     private CreditmemoRepositoryInterface $creditMemoRepository;
 
+    /** @var OrderRepository $orderRepository */
+    private OrderRepository $orderRepository;
+
     /**
      * @param CreditmemoRepositoryInterface $creditMemoRepository
+     * @param OrderRepository $orderRepository
      */
-    public function __construct(CreditmemoRepositoryInterface $creditMemoRepository)
+    public function __construct(CreditmemoRepositoryInterface $creditMemoRepository, OrderRepository $orderRepository)
     {
         $this->creditMemoRepository = $creditMemoRepository;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
@@ -37,11 +45,12 @@ class CreditmemoViewAddButton
         $creditMemoId = $subject->getRequest()->getParam('creditmemo_id');
         $creditMemo = $this->creditMemoRepository->get($creditMemoId);
 
-        if ($creditMemo->getPagaleveRefundId()) {
+        if (!$creditMemoId || $creditMemo->getPagaleveRefundId()) {
             return [$layout];
         }
 
-        if (!$creditMemoId) {
+        $order = $this->orderRepository->get($creditMemo->getOrderId());
+        if ($order->getPayment()->getMethod() != Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE) {
             return [$layout];
         }
 
