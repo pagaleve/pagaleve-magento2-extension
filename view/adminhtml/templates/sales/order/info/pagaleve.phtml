@@ -17,21 +17,6 @@ $order = $block->getOrder();
                 <div class="order-payment-additional">
                     <strong><?= __('Payment ID') ?>: </strong><?= $order->getData('pagaleve_payment_id') ?>
                 </div>
-                <?php if ($order->getData('pagaleve_release_id')) : ?>
-                    <div class="order-payment-additional">
-                        <strong><?= __('Release ID') ?>: </strong><?= $order->getData('pagaleve_release_id') ?>
-                    </div>
-                <?php endif; ?>
-                <?php foreach ($order->getInvoiceCollection() as $invoice): ?>
-                    <div class="order-payment-additional">
-                        <strong><?= __('Capture ID') ?>: </strong><?= $invoice->getData('pagaleve_capture_id') ?>
-                    </div>
-                <?php endforeach;  ?>
-                <?php foreach ($order->getCreditmemosCollection() as $creditMemo):  ?>
-                    <div class="order-payment-additional">
-                        <strong><?= __('Refund ID') ?>: </strong><?= $creditMemo->getData('pagaleve_refund_id') ?>
-                    </div>
-                <?php endforeach;  ?>
             </div>
         </div>
     </div>
