@@ -102,8 +102,6 @@ class Integrate extends Action
             throw new LocalizedException(__($e->getMessage()));
         }
 
-        $this->messageManager->addSuccessMessage(__('Creditmemo integrated success.'));
-
         /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         return $resultRedirect->setPath('sales/order_creditmemo/view', ['creditmemo_id' => $creditMemoId]);

@@ -74,24 +74,20 @@ class Approve implements HttpGetActionInterface
         try {
             $checkoutData = $this->paymentRequest->create();
             if (count($checkoutData) <= 0) {
-                $this->messageManager->addErrorMessage(__('Erro ao finalizar pedido, tente novamente. 1'));
                 $resultRedirect->setUrl($this->helperData->getCheckoutPaymentUrl());
                 return $resultRedirect;
             }
 
             $orderId = $this->helperData->createOrder($checkoutData);
             if ($orderId >= 1) {
-                $this->messageManager->addErrorMessage(__('Erro ao finalizar pedido, tente novamente.'));
                 $resultRedirect->setPath('checkout/onepage/success');
                 return $resultRedirect;
             }
 
-            $this->messageManager->addErrorMessage(__('Erro ao finalizar pedido, tente novamente. 2'));
             $resultRedirect->setUrl($this->helperData->getCheckoutPaymentUrl());
             return $resultRedirect;
 
         } catch (\Zend_Http_Client_Exception | LocalizedException $e) {
-            $this->messageManager->addErrorMessage(__('Erro ao finalizar pedido, tente novamente. 3'));
             $resultRedirect->setUrl($this->helperData->getCheckoutPaymentUrl());
             return $resultRedirect;
         }
