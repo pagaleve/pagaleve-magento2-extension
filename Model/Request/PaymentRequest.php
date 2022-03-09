@@ -58,8 +58,7 @@ class PaymentRequest extends RequestAbstract
         ResourceQuote $resourceQuote,
         Logger $logger
     ) {
-        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom);
-        $this->helperData = $helperData;
+        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData);
         $this->resourceQuote = $resourceQuote;
         $this->logger = $logger;
     }
@@ -128,7 +127,7 @@ class PaymentRequest extends RequestAbstract
     {
         $quote = $this->getQuote();
         return [
-            'amount' => $this->formatAmount($quote->getGrandTotal()),
+            'amount' => $this->helperData->formatAmount($quote->getGrandTotal()),
             'checkout_id' => $quote->getData('pagaleve_checkout_id'),
             'currency' => 'BRL',
             'intent' => $this->helperConfig->getPaymentAction(),

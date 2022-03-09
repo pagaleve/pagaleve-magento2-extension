@@ -56,7 +56,7 @@ class ReleaseRequest extends RequestAbstract
         ResourceInvoice $resourceInvoice,
         Logger $logger
     ) {
-        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom);
+        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData);
         $this->helperData = $helperData;
         $this->resourceInvoice = $resourceInvoice;
         $this->logger = $logger;
@@ -118,7 +118,7 @@ class ReleaseRequest extends RequestAbstract
     protected function prepare($amount) : array
     {
         return [
-            'amount' => $this->formatAmount($amount)
+            'amount' => $this->helperData->formatAmount($amount)
         ];
     }
 }

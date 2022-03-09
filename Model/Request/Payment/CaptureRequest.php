@@ -57,8 +57,7 @@ class CaptureRequest extends RequestAbstract
         ResourceInvoice $resourceInvoice,
         Logger $logger
     ) {
-        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom);
-        $this->helperData = $helperData;
+        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData);
         $this->resourceInvoice = $resourceInvoice;
         $this->logger = $logger;
     }
@@ -122,7 +121,7 @@ class CaptureRequest extends RequestAbstract
     protected function prepare($amount, $invoiceAmount) : array
     {
         return [
-            'amount' => $this->formatAmount($invoiceAmount),
+            'amount' => $this->helperData->formatAmount($invoiceAmount),
             'is_partial_capture' => $this->isPartialCapture($amount, $invoiceAmount)
         ];
     }

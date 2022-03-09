@@ -66,8 +66,7 @@ class CheckoutRequest extends RequestAbstract
         ResourceQuote $resourceQuote,
         Logger $logger
     ) {
-        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom);
-        $this->helperData = $helperData;
+        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData);
         $this->urlBuilder = $urlBuilder;
         $this->resourceQuote = $resourceQuote;
         $this->logger = $logger;
@@ -147,7 +146,7 @@ class CheckoutRequest extends RequestAbstract
             'order' => [
                 'reference' => $quote->getReservedOrderId(),
                 'tax' => 0,
-                'amount' => $this->formatAmount($quote->getGrandTotal()),
+                'amount' => $this->helperData->formatAmount($quote->getGrandTotal()),
             ],
             'reference' => $quote->getStore()->getName() . ' - ' . $quote->getReservedOrderId(),
             'shopper' => [
@@ -178,7 +177,7 @@ class CheckoutRequest extends RequestAbstract
             $items[] = [
                 'name' => $item->getName(),
                 'quantity' => $item->getQty(),
-                'price' => $this->formatAmount($item->getPrice()),
+                'price' => $this->helperData->formatAmount($item->getPrice()),
                 'reference' => $item->getSku()
             ];
         }

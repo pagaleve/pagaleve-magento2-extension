@@ -56,8 +56,7 @@ class RefundRequest extends RequestAbstract
         ResourceInvoice $resourceInvoice,
         Logger $logger
     ) {
-        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom);
-        $this->helperData = $helperData;
+        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData);
         $this->resourceInvoice = $resourceInvoice;
         $this->logger = $logger;
     }
@@ -122,7 +121,7 @@ class RefundRequest extends RequestAbstract
     protected function prepare($amount, $reason, $description) : array
     {
         return [
-            'amount' => $this->formatAmount($amount),
+            'amount' => $this->helperData->formatAmount($amount),
             'reason' => $reason,
             'description' => $description
         ];

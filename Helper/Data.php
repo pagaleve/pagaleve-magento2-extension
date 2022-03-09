@@ -201,17 +201,17 @@ class Data extends AbstractHelper
      * @param $amount
      * @return int
      */
-    public function formatAmount($amount): int
+    public function formatAmount($amount): ?int
     {
-        return intval($this->onlyNumbers($amount)) * 100;
+        return $this->onlyNumbers(round($amount, 2) * 100);
     }
 
     /**
      * @param $string
-     * @return array|string|string[]|null
+     * @return int
      */
-    protected function onlyNumbers($string)
+    public function onlyNumbers($string): ?int
     {
-        return preg_replace('/[^0-9.]+/', '', $string);
+        return (int) preg_replace('/[^0-9]/', '', $string);
     }
 }

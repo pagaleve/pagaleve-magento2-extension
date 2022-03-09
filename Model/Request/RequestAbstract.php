@@ -17,6 +17,7 @@ use Magento\Framework\HTTP\ZendClient;
 use Magento\Framework\HTTP\ZendClientFactory;
 use Magento\Framework\Math\Random;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
+use Pagaleve\Payment\Helper\Data as HelperData;
 use Zend_Http_Client;
 use Magento\Framework\Serialize\Serializer\Json;
 
@@ -31,6 +32,9 @@ class RequestAbstract
     /** @var HelperConfig $helperConfig */
     protected HelperConfig $helperConfig;
 
+    /** @var HelperData $helperData */
+    protected HelperData $helperData;
+
     /** @var Random $mathRandom */
     protected Random $mathRandom;
 
@@ -39,17 +43,20 @@ class RequestAbstract
      * @param Json $json
      * @param HelperConfig $helperConfig
      * @param Random $mathRandom
+     * @param HelperData $helperData
      */
     public function __construct(
         ZendClientFactory $httpClientFactory,
         json $json,
         HelperConfig $helperConfig,
-        Random $mathRandom
+        Random $mathRandom,
+        HelperData $helperData
     ) {
         $this->httpClientFactory = $httpClientFactory;
         $this->json = $json;
         $this->helperConfig = $helperConfig;
         $this->mathRandom = $mathRandom;
+        $this->helperData = $helperData;
     }
 
     /**
@@ -119,23 +126,5 @@ class RequestAbstract
             return '('.$matches[1].')'.$matches[2].'-'.$matches[3];
         }
         return $phone;
-    }
-
-    /**
-     * @param $amount
-     * @return int
-     */
-    public function formatAmount($amount): int
-    {
-        return intval($this->onlyNumbers($amount)) * 100;
-    }
-
-    /**
-     * @param $string
-     * @return array|string|string[]|null
-     */
-    protected function onlyNumbers($string)
-    {
-        return preg_replace('/[^0-9.]+/', '', $string);
     }
 }
