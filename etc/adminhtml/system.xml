@@ -74,14 +74,14 @@
                         </depends>
                         <config_path>payment/pagaleve/token_username_sandbox</config_path>
                     </field>
-                    <field id="token_password" type="obscure" sortOrder="40" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <field id="token_password" type="password" sortOrder="40" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Password</label>
                         <depends>
                             <field id="sandbox_mode">0</field>
                         </depends>
                         <config_path>payment/pagaleve/token_password</config_path>
                     </field>
-                    <field id="token_password_sandbox" type="obscure" sortOrder="45" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <field id="token_password_sandbox" type="password" sortOrder="45" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Password</label>
                         <depends>
                             <field id="sandbox_mode">1</field>
