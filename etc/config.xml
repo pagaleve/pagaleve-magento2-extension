@@ -22,7 +22,7 @@
                 <group>offline</group>
                 <instructions>instructions</instructions>
                 <sandbox_mode>1</sandbox_mode>
-                <payment_action>AUTH</payment_action>
+                <payment_action>CAPTURE</payment_action>
                 <order_status_new>pending</order_status_new>
                 <order_status_processing>processing</order_status_processing>
                 <token_url>https://api.pagaleve.com.br/v1/authentication</token_url>
