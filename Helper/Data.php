@@ -25,6 +25,7 @@ use Magento\Framework\DB\Transaction;
 use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Checkout\Model\Session as CheckoutSession;
+use Pagaleve\Payment\Model\Config\Source\PaymentAction;
 use Pagaleve\Payment\Model\Pagaleve;
 
 class Data extends AbstractHelper
@@ -126,7 +127,7 @@ class Data extends AbstractHelper
             return 0;
         }
 
-        if ($this->helperConfig->getPaymentAction() == 'CAPTURE') {
+        if ($this->helperConfig->getPaymentAction() == PaymentAction::AUTHORIZE_AND_CAPTURE) {
             $this->createInvoice($order, $checkoutData);
             $order->setState(Order::STATE_PROCESSING);
             $order->setStatus($this->helperConfig->getPaymentStatusProcessing());
@@ -213,5 +214,14 @@ class Data extends AbstractHelper
     public function onlyNumbers($string): ?int
     {
         return (int) preg_replace('/[^0-9]/', '', $string);
+    }
+
+    /**
+     * @param $date
+     * @return false|string
+     */
+    public function formatDate($date)
+    {
+        return date('Y-m-d H:i:s', strtotime($date));
     }
 }

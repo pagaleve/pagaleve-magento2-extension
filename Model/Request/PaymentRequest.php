@@ -23,6 +23,7 @@ use Magento\Quote\Model\ResourceModel\Quote as ResourceQuote;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Helper\Data as HelperData;
 use Pagaleve\Payment\Logger\Logger;
+use Pagaleve\Payment\Model\Config\Source\PaymentAction;
 use Zend_Http_Client;
 
 class PaymentRequest extends RequestAbstract
@@ -104,6 +105,13 @@ class PaymentRequest extends RequestAbstract
         if (isset($checkoutData['id']) && $checkoutData['id']) {
             $quote = $this->getQuote();
             $quote->setData('pagaleve_payment_id', $checkoutData['id']);
+
+            if ($this->helperConfig->getPaymentAction() == PaymentAction::AUTHORIZE) {
+                $quote->setData(
+                    'pagaleve_expiration_date',
+                    $this->helperData->formatDate($checkoutData['authorization']['expiration'])
+                );
+            }
             $this->resourceQuote->save($quote);
         }
         return $checkoutData;

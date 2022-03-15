@@ -1,8 +1,14 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
+ * @author      FCamara - Formação e Consultoria <contato@fcamara.com.br>
+ * @author      Guilherme Miguelete <guilherme.miguelete@fcamara.com.br>
+ * @license     Pagaleve Tecnologia Financeira | Copyright
+ * @copyright   2022 Pagaleve Tecnologia Financeira (http://www.pagaleve.com.br)
+ *
+ * @link        http://www.pagaleve.com.br
  */
+
+declare(strict_types=1);
 
 namespace Pagaleve\Payment\Observer;
 
@@ -47,6 +53,7 @@ class SaveOrderBeforeSalesModelQuoteObserver implements ObserverInterface
 
         $order->setData('pagaleve_checkout_id', $quote->getData('pagaleve_checkout_id'));
         $order->setData('pagaleve_payment_id', $quote->getData('pagaleve_payment_id'));
+        $order->setData('pagaleve_expiration_date', $quote->getData('pagaleve_expiration_date'));
 
         $this->objectCopyService->copyFieldsetToTarget('sales_convert_quote', 'to_order', $quote, $order);
 

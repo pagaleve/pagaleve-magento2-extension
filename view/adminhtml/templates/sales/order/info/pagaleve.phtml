@@ -1,5 +1,13 @@
 <?php
 /**
+ * @author      FCamara - Formação e Consultoria <contato@fcamara.com.br>
+ * @author      Guilherme Miguelete <guilherme.miguelete@fcamara.com.br>
+ * @license     Pagaleve Tecnologia Financeira | Copyright
+ * @copyright   2022 Pagaleve Tecnologia Financeira (http://www.pagaleve.com.br)
+ *
+ * @link        http://www.pagaleve.com.br
+ */
+/**
  * @var $block \Pagaleve\Payment\Block\Info\Pagaleve
  */
 $order = $block->getOrder();
@@ -17,6 +25,12 @@ $order = $block->getOrder();
                 <div class="order-payment-additional">
                     <strong><?= __('Payment ID') ?>: </strong><?= $order->getData('pagaleve_payment_id') ?>
                 </div>
+                <?php if ($order->getData('pagaleve_expiration_date')) : ?>
+                <div class="order-payment-additional">
+                    <strong><?= __('Release Date') ?>: </strong>
+                    <?= $block->formatDate($order->getData('pagaleve_expiration_date'), 3, true) ?>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

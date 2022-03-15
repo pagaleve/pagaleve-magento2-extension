@@ -9,6 +9,9 @@
             <field name="pagaleve_payment_id">
                 <aspect name="to_order" targetField="pagaleve_payment_id" />
             </field>
+            <field name="pagaleve_expiration_date">
+                <aspect name="to_order" targetField="pagaleve_expiration_date" />
+            </field>
         </fieldset>
     </scope>
 </config>

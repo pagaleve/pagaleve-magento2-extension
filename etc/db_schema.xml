@@ -3,17 +3,20 @@
     <table name="quote">
         <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
         <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
+        <column name="pagaleve_expiration_date" nullable="true" xsi:type="datetime" comment="Pagaleve Expiration Date"/>
     </table>
 
     <table name="sales_order">
         <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
         <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
         <column name="pagaleve_release_id" nullable="true" xsi:type="varchar" comment="Pagaleve Release ID" length="255"/>
+        <column name="pagaleve_expiration_date" nullable="true" xsi:type="datetime" comment="Pagaleve Expiration Date"/>
     </table>
     <table name="sales_order_grid">
         <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
         <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
         <column name="pagaleve_release_id" nullable="true" xsi:type="varchar" comment="Pagaleve Release ID" length="255"/>
+        <column name="pagaleve_expiration_date" nullable="true" xsi:type="datetime" comment="Pagaleve Expiration Date"/>
     </table>
 
     <table name="sales_invoice">
