@@ -19,14 +19,14 @@ $order = $block->getOrder();
                 <span class="title"><?= $block->escapeHtml(__('Pagaleve')) ?></span>
             </div>
             <div class="admin__page-section-item-content">
-                <div class="order-payment-additional">
+                <div class="order-payment-additional" style="min-width: 400px;">
                     <strong><?= __('Checkout ID') ?>: </strong><?= $order->getData('pagaleve_checkout_id') ?>
                 </div>
-                <div class="order-payment-additional">
+                <div class="order-payment-additional" style="min-width: 400px;">
                     <strong><?= __('Payment ID') ?>: </strong><?= $order->getData('pagaleve_payment_id') ?>
                 </div>
                 <?php if ($order->getData('pagaleve_expiration_date')) : ?>
-                <div class="order-payment-additional">
+                    <div class="order-payment-additional" style="min-width: 400px;">
                     <strong><?= __('Release Date') ?>: </strong>
                     <?= $block->formatDate($order->getData('pagaleve_expiration_date'), 3, true) ?>
                 </div>
