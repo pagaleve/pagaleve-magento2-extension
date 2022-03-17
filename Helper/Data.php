@@ -120,6 +120,10 @@ class Data extends AbstractHelper
             return 0;
         }
 
+        if (!in_array($checkoutData['state'], ['AUTHORIZED', 'CAPTURE'])) {
+            return 0;
+        }
+
         $order = $this->quoteManagement->submit($quote);
 
         $order->setEmailSent(0);
