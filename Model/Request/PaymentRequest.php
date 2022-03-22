@@ -78,18 +78,25 @@ class PaymentRequest extends RequestAbstract
         $client->setrawdata($body, 'application/json');
         $client->setmethod(Zend_Http_Client::POST);
 
-        $request = $client->request();
-        $requestBody = $request->getbody();
+        $x = 1;
+        do {
+            sleep(2);
 
-        $this->logger->info(
-            'PaymentRequest: ' . $client->getUri() . ' - ' . $requestBody
-        );
+            $request = $client->request();
+            $requestBody = $request->getbody();
 
-        if ($request->getstatus() == 201) {
-            return $this->success($requestBody);
-        } else {
-            return $this->fail($requestBody);
-        }
+            $this->logger->info(
+                'PaymentRequest: ' . $client->getUri() . ' - ' . $requestBody
+            );
+
+            if ($request->getstatus() == 201) {
+                return $this->success($requestBody);
+            }
+
+            $x++;
+        } while ($x <= 10);
+
+        return $this->fail($requestBody);
     }
 
     /**
