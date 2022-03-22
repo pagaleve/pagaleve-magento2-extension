@@ -139,6 +139,7 @@ class CheckoutRequest extends RequestAbstract
         $billingAddress = $quote->getBillingAddress();
 
         $content = [
+            'provider' => 'MAGENTO_2',
             'metadata' => [
                 'transactionId' => $quote->getReservedOrderId(),
                 'merchantName' => $quote->getStore()->getName(),
