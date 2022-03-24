@@ -27,6 +27,7 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Pagaleve\Payment\Model\Config\Source\PaymentAction;
 use Pagaleve\Payment\Model\Pagaleve;
+use Pagaleve\Payment\Logger\Logger;
 
 class Data extends AbstractHelper
 {
@@ -54,6 +55,9 @@ class Data extends AbstractHelper
     /** @var Config $helperConfig */
     private Config $helperConfig;
 
+    /** @var Logger $logger */
+    private Logger $logger;
+
     /**
      * @param Context $context
      * @param QuoteManagement $quoteManagement
@@ -64,6 +68,7 @@ class Data extends AbstractHelper
      * @param Transaction $transaction
      * @param OrderRepositoryInterface $orderRepository
      * @param Config $helperConfig
+     * @param Logger $logger
      */
     public function __construct(
         Context $context,
@@ -74,7 +79,8 @@ class Data extends AbstractHelper
         InvoiceSender $invoiceSender,
         Transaction $transaction,
         OrderRepositoryInterface $orderRepository,
-        Config $helperConfig
+        Config $helperConfig,
+        Logger $logger
     ) {
         $this->quoteManagement = $quoteManagement;
         $this->checkoutSession = $checkoutSession;
@@ -84,6 +90,7 @@ class Data extends AbstractHelper
         $this->transaction = $transaction;
         $this->orderRepository = $orderRepository;
         $this->helperConfig = $helperConfig;
+        $this->logger = $logger;
         parent::__construct($context);
     }
 
@@ -117,10 +124,17 @@ class Data extends AbstractHelper
         $quote->collectTotals()->save();
 
         if ($checkoutData['amount'] != $this->formatAmount($quote->getGrandTotal())) {
+            $this->logger->info(
+                'HelperData: Order totals divergent in magento and Pagaleve payment: '. $checkoutData['amount']
+                . ' | ' . $this->formatAmount($quote->getGrandTotal())
+            );
             return 0;
         }
 
         if (!in_array($checkoutData['state'], ['AUTHORIZED', 'CAPTURED'])) {
+            $this->logger->info(
+                'HelperData: Pagaleve payment not AUTHORIZED or CAPTURED: ' . $checkoutData['state']
+            );
             return 0;
         }
 
@@ -128,6 +142,7 @@ class Data extends AbstractHelper
 
         $order->setEmailSent(0);
         if (!$order->getEntityId()) {
+            $this->logger->info('HelperData: Error on create order');
             return 0;
         }
 
