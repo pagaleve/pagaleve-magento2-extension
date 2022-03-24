@@ -120,7 +120,7 @@ class Data extends AbstractHelper
             return 0;
         }
 
-        if (!in_array($checkoutData['state'], ['AUTHORIZED', 'CAPTURE'])) {
+        if (!in_array($checkoutData['state'], ['AUTHORIZED', 'CAPTURED'])) {
             return 0;
         }
 

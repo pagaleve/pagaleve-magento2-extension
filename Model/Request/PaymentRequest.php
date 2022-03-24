@@ -72,15 +72,15 @@ class PaymentRequest extends RequestAbstract
     {
         $this->validate();
 
-        $client = $this->getClient($this->helperConfig->getPaymentUrl());
-        $body = $this->json->serialize($this->prepare());
-
-        $client->setrawdata($body, 'application/json');
-        $client->setmethod(Zend_Http_Client::POST);
-
         $x = 1;
         do {
             sleep(2);
+
+            $client = $this->getClient($this->helperConfig->getPaymentUrl());
+            $body = $this->json->serialize($this->prepare());
+
+            $client->setrawdata($body, 'application/json');
+            $client->setmethod(Zend_Http_Client::POST);
 
             $request = $client->request();
             $requestBody = $request->getbody();
