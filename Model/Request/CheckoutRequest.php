@@ -185,9 +185,6 @@ class CheckoutRequest extends RequestAbstract
 
         $content['order']['items'] = $items;
 
-        echo "<pre>";
-        print_r($content); die;
-
         return $content;
     }
 
