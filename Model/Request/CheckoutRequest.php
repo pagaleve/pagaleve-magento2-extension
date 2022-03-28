@@ -151,10 +151,10 @@ class CheckoutRequest extends RequestAbstract
             ],
             'reference' => $quote->getStore()->getName() . ' - ' . $quote->getReservedOrderId(),
             'shopper' => [
-                'first_name' => $quote->getCustomerFirstname(),
-                'last_name' => $quote->getCustomerLastname(),
+                'first_name' => $billingAddress->getFirstname(),
+                'last_name' => $billingAddress->getLastname(),
                 'phone' => $this->formatPhone($billingAddress->getTelephone()),
-                'email' => $quote->getCustomerEmail(),
+                'email' => $billingAddress->getEmail(),
                 'cpf' => $quote->getCustomerTaxvat(),
                 'billing_address' => [
                     'name' => $billingAddress->getFirstname() .' ' . $billingAddress->getLastname(),
@@ -184,6 +184,10 @@ class CheckoutRequest extends RequestAbstract
         }
 
         $content['order']['items'] = $items;
+
+        echo "<pre>";
+        print_r($content); die;
+
         return $content;
     }
 
