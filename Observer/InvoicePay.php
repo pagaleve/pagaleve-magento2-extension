@@ -70,13 +70,15 @@ class InvoicePay implements ObserverInterface
 
             if (isset($captureData['id']) && $captureData['id']) {
                 $invoice->setData('pagaleve_capture_id', $captureData['id']);
+                return $this;
             }
 
         } catch (AlreadyExistsException|LocalizedException|\Zend_Http_Client_Exception $e) {
             throw new LocalizedException(__($e->getMessage()));
-            //return $this;
         }
 
-        return $this;
+        throw new LocalizedException(
+            __('It was not possible to complete this transaction at this time, please try again in a few moments.')
+        );
     }
 }

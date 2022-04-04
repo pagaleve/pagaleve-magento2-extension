@@ -30,3 +30,4 @@ Payment Information Additional,Informações de Pagamento adicionais
 "Checkout ID","ID do checkout"
 "Payment ID","ID do pagamento"
 "Release Date","Expiração da autorização"
+"It was not possible to complete this transaction at this time, please try again in a few moments.","Não foi possível realizar essa transação nesse momento, por favor tente novamente em alguns instantes."
