@@ -77,6 +77,12 @@ class InvoicePay implements ObserverInterface
             throw new LocalizedException(__($e->getMessage()));
         }
 
+        if (isset($captureData['exception']) && $captureData['exception'] == 'InvalidTransactionException') {
+            throw new LocalizedException(
+                __('This transaction could not be performed, please contact Pagaleve.')
+            );
+        }
+
         throw new LocalizedException(
             __('It was not possible to complete this transaction at this time, please try again in a few moments.')
         );

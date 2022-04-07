@@ -110,7 +110,7 @@ class CaptureRequest extends RequestAbstract
      */
     protected function fail($response): array
     {
-        return [];
+        return $this->json->unserialize($response);
     }
 
     /**
