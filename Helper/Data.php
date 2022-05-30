@@ -108,15 +108,18 @@ class Data extends AbstractHelper
      * Create Order On Your Store
      *
      * @param $checkoutData
+     * @param null $quote
      * @return integer
      *
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function createOrder($checkoutData): int
+    public function createOrder($checkoutData, $quote = null): int
     {
 
-        $quote = $this->checkoutSession->getQuote();
+        if (!$quote) {
+            $quote = $this->checkoutSession->getQuote();
+        }
 
         $quote->setPaymentMethod(Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE);
         $quote->getPayment()->importData(['method' => Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE]);
