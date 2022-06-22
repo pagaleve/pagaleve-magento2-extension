@@ -48,6 +48,10 @@
                         </depends>
                         <config_path>payment/pagaleve/order_status_processing</config_path>
                     </field>
+                    <field id="retry_deadline" type="text" sortOrder="60" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Retry deadline</label>
+                        <config_path>payment/pagaleve/retry_deadline</config_path>
+                    </field>
                     <field id="sort_order" type="text" sortOrder="1000" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Sort Order</label>
                         <config_path>payment/pagaleve/sort_order</config_path>

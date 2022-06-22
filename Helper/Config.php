@@ -49,6 +49,8 @@ class Config extends AbstractHelper
 
     public const PAYMENT_ACTION = 'payment/pagaleve/payment_action';
 
+    public const PAYMENT_RETRY_DEADLINE = 'payment/pagaleve/retry_deadline';
+
     public const PAYMENT_STATUS_NEW = 'payment/pagaleve/order_status_new';
     public const PAYMENT_STATUS_PROCESSING = 'payment/pagaleve/order_status_processing';
 
@@ -160,6 +162,14 @@ class Config extends AbstractHelper
     public function getPaymentInstructions()
     {
         return $this->getStoreConfig(self::PAYMENT_INSTRUCTIONS);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRetryDeadline()
+    {
+        return $this->getStoreConfig(self::PAYMENT_RETRY_DEADLINE) ?? 15;
     }
 
     /**

@@ -41,6 +41,9 @@ class PaymentRequest extends RequestAbstract
     /** @var Logger $logger */
     private Logger $logger;
 
+    /** @var $quote */
+    protected $quote = false;
+
     /**
      * @param ZendClientFactory $httpClientFactory
      * @param Json $json
@@ -100,6 +103,32 @@ class PaymentRequest extends RequestAbstract
     }
 
     /**
+     * @param $paymentId
+     * @return array
+     * @throws AlreadyExistsException
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     * @throws \Zend_Http_Client_Exception
+     */
+    public function get($paymentId): array
+    {
+        $client = $this->getClient($this->helperConfig->getPaymentUrl() . "/" . $paymentId);
+        $client->setmethod(Zend_Http_Client::GET);
+
+        $request = $client->request();
+        $requestBody = $request->getbody();
+
+        $this->logger->info(
+            'PaymentRequestGet: ' . $client->getUri() . ' - ' . $requestBody
+        );
+
+        if ($request->getstatus() == 200) {
+            return $this->json->unserialize($requestBody);
+        }
+        return [];
+    }
+
+    /**
      * @param $requestBody
      * @return array
      * @throws LocalizedException
@@ -151,13 +180,24 @@ class PaymentRequest extends RequestAbstract
     }
 
     /**
-     * @return Quote
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function getQuote(): Quote
+    public function getQuote()
     {
+        if ($this->quote) {
+            return $this->quote;
+        }
         return $this->helperData->getQuote();
+    }
+
+    /**
+     * @param $quote
+     * @return void
+     */
+    public function setQuote($quote)
+    {
+        $this->quote = $quote;
     }
 
     /**

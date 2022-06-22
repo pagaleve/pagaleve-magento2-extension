@@ -21,6 +21,7 @@
 				<allowspecific>0</allowspecific>
                 <group>offline</group>
                 <instructions>instructions</instructions>
+                <retry_deadline>15</retry_deadline>
                 <sandbox_mode>1</sandbox_mode>
                 <payment_action>CAPTURE</payment_action>
                 <order_status_new>pending</order_status_new>
