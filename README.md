@@ -7,8 +7,8 @@ https://pagaleve.stoplight.io/docs/public-apis/YXBpOjExOTgyMjU4-pagaleve-api
 
 ## Requirements
 This plugin supports:
-- PHP 7.3.0 version and higher.
-- Magento2 version 2.3.3 and higher.
+- PHP 7.4.0 version and higher.
+- Magento2 version 2.4.5 and higher.
 
 ## Installation
 To install our plugin through Composer::

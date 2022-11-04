@@ -13,10 +13,10 @@ declare(strict_types=1);
 namespace Pagaleve\Payment\Cron;
 
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
 use Pagaleve\Payment\Helper\Data as HelperData;
 use Pagaleve\Payment\Model\Request\PaymentRequest;
 use Psr\Log\LoggerInterface;
-use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
 
 class CreateOrders
 {
@@ -49,8 +49,7 @@ class CreateOrders
         QuoteCollectionFactory $quoteCollectionFactory,
         HelperData $helperData,
         PaymentRequest $paymentRequest
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->quoteCollectionFactory = $quoteCollectionFactory;
         $this->helperData = $helperData;
@@ -70,9 +69,7 @@ class CreateOrders
         $quoteList->addFieldToFilter('pagaleve_payment_id', ['notnull' => true]);
 
         foreach ($quoteList as $quote) {
-
             try {
-
                 $checkoutData = $this->paymentRequest->get($quote->getData('pagaleve_payment_id'));
                 $orderId = $this->helperData->createOrder($checkoutData, $quote);
 
@@ -82,7 +79,6 @@ class CreateOrders
             } catch (\Zend_Http_Client_Exception | LocalizedException $e) {
                 $this->logger->error($e->getMessage());
             }
-
         }
 
         $this->logger->info("Cronjob CreateOrders is executed.");

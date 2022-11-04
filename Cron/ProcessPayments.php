@@ -14,10 +14,10 @@ namespace Pagaleve\Payment\Cron;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Model\Quote;
+use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Model\Request\PaymentRequest;
 use Psr\Log\LoggerInterface;
-use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
 
 class ProcessPayments
 {
@@ -42,7 +42,7 @@ class ProcessPayments
      *
      * @param LoggerInterface $logger
      * @param QuoteCollectionFactory $quoteCollectionFactory
-     * @param HelperData $helperData
+     * @param HelperConfig $helperConfig
      * @param PaymentRequest $paymentRequest
      */
     public function __construct(
@@ -50,8 +50,7 @@ class ProcessPayments
         QuoteCollectionFactory $quoteCollectionFactory,
         HelperConfig $helperConfig,
         PaymentRequest $paymentRequest
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->quoteCollectionFactory = $quoteCollectionFactory;
         $this->helperConfig = $helperConfig;
@@ -76,7 +75,6 @@ class ProcessPayments
 
         /** @var Quote $quote */
         foreach ($quoteList as $quote) {
-
             try {
                 $this->paymentRequest->setQuote($quote);
                 $checkoutData = $this->paymentRequest->create();
@@ -86,7 +84,6 @@ class ProcessPayments
             } catch (\Zend_Http_Client_Exception | LocalizedException $e) {
                 $this->logger->error($e->getMessage());
             }
-
         }
     }
 }

@@ -16,10 +16,10 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ZendClient;
 use Magento\Framework\HTTP\ZendClientFactory;
 use Magento\Framework\Math\Random;
+use Magento\Framework\Serialize\Serializer\Json;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Helper\Data as HelperData;
 use Zend_Http_Client;
-use Magento\Framework\Serialize\Serializer\Json;
 
 class RequestAbstract
 {
@@ -123,7 +123,7 @@ class RequestAbstract
         $matches = [];
         preg_match('/^([0-9]{2})([0-9]{4,5})([0-9]{4})$/', $formattedPhone, $matches);
         if ($matches) {
-            return '('.$matches[1].')'.$matches[2].'-'.$matches[3];
+            return '(' . $matches[1] . ')' . $matches[2] . '-' . $matches[3];
         }
         return $phone;
     }

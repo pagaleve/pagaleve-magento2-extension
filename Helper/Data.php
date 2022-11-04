@@ -12,22 +12,22 @@ declare(strict_types=1);
 
 namespace Pagaleve\Payment\Helper;
 
+use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\DB\Transaction;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\QuoteManagement;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Service\InvoiceService;
-use Magento\Framework\DB\Transaction;
-use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Checkout\Model\Session as CheckoutSession;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
+use Magento\Sales\Model\Service\InvoiceService;
+use Pagaleve\Payment\Logger\Logger;
 use Pagaleve\Payment\Model\Config\Source\PaymentAction;
 use Pagaleve\Payment\Model\Pagaleve;
-use Pagaleve\Payment\Logger\Logger;
 
 class Data extends AbstractHelper
 {
@@ -116,7 +116,6 @@ class Data extends AbstractHelper
      */
     public function createOrder($checkoutData, $quote = null): int
     {
-
         if (!$quote) {
             $quote = $this->checkoutSession->getQuote();
         }
@@ -128,7 +127,7 @@ class Data extends AbstractHelper
 
         if ($checkoutData['amount'] != $this->formatAmount($quote->getGrandTotal())) {
             $this->logger->info(
-                'HelperData: Order totals divergent in magento and Pagaleve payment: '. $checkoutData['amount']
+                'HelperData: Order totals divergent in magento and Pagaleve payment: ' . $checkoutData['amount']
                 . ' | ' . $this->formatAmount($quote->getGrandTotal())
             );
             return 0;
@@ -222,27 +221,27 @@ class Data extends AbstractHelper
 
     /**
      * @param $amount
-     * @return int
+     * @return int|null
      */
     public function formatAmount($amount): ?int
     {
-        return $this->onlyNumbers(round($amount, 2) * 100);
+        return $this->onlyNumbers(round((float) $amount, 2) * 100);
     }
 
     /**
      * @param $string
-     * @return int
+     * @return int|null
      */
     public function onlyNumbers($string): ?int
     {
-        return (int) preg_replace('/[^0-9]/', '', $string);
+        return (int) preg_replace('/[^0-9]/', '', (string) $string);
     }
 
     /**
      * @param $date
-     * @return false|string
+     * @return string|null
      */
-    public function formatDate($date)
+    public function formatDate($date): ?string
     {
         return date('Y-m-d H:i:s', strtotime($date));
     }

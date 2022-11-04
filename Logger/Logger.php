@@ -29,10 +29,9 @@ class Logger extends \Monolog\Logger
     public function __construct(
         string $name,
         HelperConfig $helperConfig,
-        array $handlers = array(),
-        array $processors = array()
-    )
-    {
+        array $handlers = [],
+        array $processors = []
+    ) {
         parent::__construct($name, $handlers, $processors);
         $this->helperConfig = $helperConfig;
     }
@@ -40,12 +39,11 @@ class Logger extends \Monolog\Logger
     /**
      * @param string $message
      * @param array $context
-     * @return bool
      */
-    public function info($message, array $context = array())
+    public function info($message, array $context = []): void
     {
         if ($this->helperConfig->enabledLog()) {
-            return parent::info($message, $context);
+            parent::info($message, $context);
         }
     }
 }
