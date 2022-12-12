@@ -19,6 +19,8 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Pagaleve\Payment\Helper\Data as HelperData;
 use Pagaleve\Payment\Model\Request\PaymentRequest;
+use Pagaleve\Payment\Model\Request\CheckoutRequest;
+use Magento\Checkout\Model\Session;
 
 class Approve implements HttpGetActionInterface
 {
@@ -43,23 +45,39 @@ class Approve implements HttpGetActionInterface
     protected ManagerInterface $messageManager;
 
     /**
+     * @var CheckoutRequest
+     */
+    protected CheckoutRequest $checkoutRequest;
+
+    /**
+     * @var Session
+     */
+    protected Session $checkoutSession;
+
+    /**
      * Constructor
      *
      * @param RedirectFactory $resultRedirectFactory
      * @param HelperData $helperData
      * @param PaymentRequest $paymentRequest
      * @param ManagerInterface $messageManager
+     * @param CheckoutRequest $checkoutRequest
+     * @param Session $checkoutSession
      */
     public function __construct(
         RedirectFactory $resultRedirectFactory,
         HelperData $helperData,
         PaymentRequest $paymentRequest,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        CheckoutRequest $checkoutRequest,
+        Session $checkoutSession
     ) {
         $this->resultRedirectFactory = $resultRedirectFactory;
         $this->helperData = $helperData;
         $this->paymentRequest = $paymentRequest;
         $this->messageManager = $messageManager;
+        $this->checkoutRequest = $checkoutRequest;
+        $this->checkoutSession = $checkoutSession;
     }
 
     /**
@@ -72,19 +90,21 @@ class Approve implements HttpGetActionInterface
         $resultRedirect = $this->resultRedirectFactory->create();
 
         try {
-            $checkoutData = $this->paymentRequest->create();
-            if (count($checkoutData) <= 0) {
-                $resultRedirect->setUrl($this->helperData->getCheckoutPaymentUrl());
-                return $resultRedirect;
+            $order = $this->checkoutSession->getLastRealOrder();
+            if(false && $order) {
+                $checkoutData = $this->checkoutRequest->get($order->getPagaleveCheckoutId());
+                if (is_array($checkoutData) && isset($checkoutData['state'])) {
+                    if ($checkoutData['state'] == 'AUTHORIZED') {
+                        $this->paymentRequest->setOrder($order);
+                        $paymentData = $this->paymentRequest->create();
+                        if (count($paymentData) >= 1) {
+                            $this->helperData->createInvoice($order, $paymentData);
+                        }
+                    }
+                }
             }
-
-            $orderId = $this->helperData->createOrder($checkoutData);
-            if ($orderId >= 1) {
-                $resultRedirect->setPath('checkout/onepage/success');
-                return $resultRedirect;
-            }
-
-            $resultRedirect->setUrl($this->helperData->getCheckoutPaymentUrl());
+            
+            $resultRedirect->setPath('checkout/onepage/success?passthrough=true');
             return $resultRedirect;
 
         } catch (\Zend_Http_Client_Exception | LocalizedException $e) {

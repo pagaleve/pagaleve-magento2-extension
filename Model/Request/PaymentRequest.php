@@ -41,8 +41,8 @@ class PaymentRequest extends RequestAbstract
     /** @var Logger $logger */
     private Logger $logger;
 
-    /** @var $quote */
-    protected $quote = false;
+    /** @var $order */
+    protected $order = false;
 
     /**
      * @param ZendClientFactory $httpClientFactory
@@ -75,29 +75,22 @@ class PaymentRequest extends RequestAbstract
     {
         $this->validate();
 
-        $x = 1;
-        do {
-            sleep(2);
+        $client = $this->getClient($this->helperConfig->getPaymentUrl());
+        $body = $this->json->serialize($this->prepare());
 
-            $client = $this->getClient($this->helperConfig->getPaymentUrl());
-            $body = $this->json->serialize($this->prepare());
+        $client->setrawdata($body, 'application/json');
+        $client->setmethod(Zend_Http_Client::POST);
 
-            $client->setrawdata($body, 'application/json');
-            $client->setmethod(Zend_Http_Client::POST);
+        $request = $client->request();
+        $requestBody = $request->getbody();
 
-            $request = $client->request();
-            $requestBody = $request->getbody();
+        $this->logger->info(
+            'PaymentRequest: ' . $client->getUri() . ' - ' . $requestBody
+        );
 
-            $this->logger->info(
-                'PaymentRequest: ' . $client->getUri() . ' - ' . $requestBody
-            );
-
-            if ($request->getstatus() == 201) {
-                return $this->success($requestBody);
-            }
-
-            $x++;
-        } while ($x <= 10);
+        if ($request->getstatus() == 201) {
+            return $this->success($requestBody);
+        }
 
         return $this->fail($requestBody);
     }
@@ -139,16 +132,17 @@ class PaymentRequest extends RequestAbstract
     {
         $checkoutData = $this->json->unserialize($requestBody);
         if (isset($checkoutData['id']) && $checkoutData['id']) {
-            $quote = $this->getQuote();
-            $quote->setData('pagaleve_payment_id', $checkoutData['id']);
+            $order = $this->getOrder();
+            $order->setData('pagaleve_payment_id', $checkoutData['id']);
 
-            if ($this->helperConfig->getPaymentAction() == PaymentAction::AUTHORIZE) {
-                $quote->setData(
+            /*if ($this->helperConfig->getPaymentAction() == PaymentAction::AUTHORIZE) {
+                $order->setData(
                     'pagaleve_expiration_date',
                     $this->helperData->formatDate($checkoutData['authorization']['expiration'])
                 );
-            }
-            $this->resourceQuote->save($quote);
+            }*/
+            $order->save();
+            //$this->resourceQuote->save($order);
         }
         return $checkoutData;
     }
@@ -169,13 +163,14 @@ class PaymentRequest extends RequestAbstract
      */
     protected function prepare() : array
     {
-        $quote = $this->getQuote();
+        $order = $this->getOrder();
         return [
-            'amount' => $this->helperData->formatAmount($quote->getGrandTotal()),
-            'checkout_id' => $quote->getData('pagaleve_checkout_id'),
+            'amount' => $this->helperData->formatAmount($order->getGrandTotal()),
+            'checkout_id' => $order->getData('pagaleve_checkout_id'),
             'currency' => 'BRL',
-            'intent' => $this->helperConfig->getPaymentAction(),
-            'reference' => $quote->getReservedOrderId()
+            //'intent' => $this->helperConfig->getPaymentAction(),
+            'intent' => \Pagaleve\Payment\Model\Config\Source\PaymentAction::AUTHORIZE_AND_CAPTURE,
+            'reference' => $order->getIncrementId()
         ];
     }
 
@@ -183,21 +178,22 @@ class PaymentRequest extends RequestAbstract
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function getQuote()
+    public function getOrder()
     {
-        if ($this->quote) {
-            return $this->quote;
+        if (!$this->order) {
+            $message = __('Order is required');
+            throw new LocalizedException(__($message));
         }
-        return $this->helperData->getQuote();
+        return $this->order;
     }
 
     /**
-     * @param $quote
+     * @param $order
      * @return void
      */
-    public function setQuote($quote)
+    public function setOrder($order)
     {
-        $this->quote = $quote;
+        $this->order = $order;
     }
 
     /**
@@ -205,8 +201,9 @@ class PaymentRequest extends RequestAbstract
      */
     protected function validate()
     {
-        if (!$this->getQuote()->getId()) {
-            $message = __('Quote is required');
+        $order = $this->getOrder();
+        if (!$order->getIncrementId()) {
+            $message = __('Order is required');
             throw new LocalizedException(__($message));
         }
     }

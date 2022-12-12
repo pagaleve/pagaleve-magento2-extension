@@ -149,14 +149,8 @@ class Data extends AbstractHelper
             return 0;
         }
 
-        if ($this->helperConfig->getPaymentAction() == PaymentAction::AUTHORIZE_AND_CAPTURE) {
-            $this->createInvoice($order, $checkoutData);
-            $order->setState(Order::STATE_PROCESSING);
-            $order->setStatus($this->helperConfig->getPaymentStatusProcessing());
-        } else {
-            $order->setState(Order::STATE_NEW);
-            $order->setStatus($this->helperConfig->getPaymentStatusNew());
-        }
+        $order->setState(Order::STATE_NEW);
+        $order->setStatus($this->helperConfig->getPaymentStatusNew());
 
         $this->orderRepository->save($order);
 
@@ -193,9 +187,12 @@ class Data extends AbstractHelper
         $transactionSave->save();
         $this->invoiceSender->send($invoice);
 
+        $orderState = Order::STATE_PROCESSING;
+        $order->setState($orderState)->setStatus($orderState);
         $order->addStatusHistoryComment(
-            __('Notified customer about invoice creation #%1.', $invoice->getId())
-        )->setIsCustomerNotified(true)->save();
+                __('Notified customer about invoice creation #%1.', $invoice->getId())
+            )->setIsCustomerNotified(true);
+        $order->save();
     }
 
     /**

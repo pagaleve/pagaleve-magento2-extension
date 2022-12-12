@@ -21,9 +21,9 @@
 				<allowspecific>0</allowspecific>
                 <group>offline</group>
                 <instructions>instructions</instructions>
-                <retry_deadline>15</retry_deadline>
+                <retry_deadline>2</retry_deadline>
                 <sandbox_mode>1</sandbox_mode>
-                <payment_action>CAPTURE</payment_action>
+                <payment_action>authorize</payment_action>
                 <order_status_new>pending</order_status_new>
                 <order_status_processing>processing</order_status_processing>
                 <token_url>https://api.pagaleve.com.br/v1/authentication</token_url>

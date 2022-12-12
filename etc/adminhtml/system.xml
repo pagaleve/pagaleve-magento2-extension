@@ -27,26 +27,10 @@
                         <label>Title</label>
                         <config_path>payment/pagaleve/title</config_path>
                     </field>
-                    <field id="payment_action" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Payment Action</label>
-                        <source_model>Pagaleve\Payment\Model\Config\Source\PaymentAction</source_model>
-                        <config_path>payment/pagaleve/payment_action</config_path>
-                    </field>
-                    <field id="order_status_new" type="select" sortOrder="40" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <field id="order_status" type="select" sortOrder="40" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Status</label>
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>
-                        <depends>
-                            <field id="payment_action">AUTH</field>
-                        </depends>
-                        <config_path>payment/pagaleve/order_status_new</config_path>
-                    </field>
-                    <field id="order_status_processing" type="select" sortOrder="50" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Status</label>
-                        <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
-                        <depends>
-                            <field id="payment_action">CAPTURE</field>
-                        </depends>
-                        <config_path>payment/pagaleve/order_status_processing</config_path>
+                        <config_path>payment/pagaleve/order_status</config_path>
                     </field>
                     <field id="retry_deadline" type="text" sortOrder="60" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Retry deadline</label>
