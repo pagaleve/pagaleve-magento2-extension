@@ -91,7 +91,7 @@ class Approve implements HttpGetActionInterface
 
         try {
             $order = $this->checkoutSession->getLastRealOrder();
-            if(false && $order) {
+            if($order) {
                 $checkoutData = $this->checkoutRequest->get($order->getPagaleveCheckoutId());
                 if (is_array($checkoutData) && isset($checkoutData['state'])) {
                     if ($checkoutData['state'] == 'AUTHORIZED') {
