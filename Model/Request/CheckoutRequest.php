@@ -25,9 +25,11 @@ use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Helper\Data as HelperData;
 use Pagaleve\Payment\Logger\Logger;
 use Zend_Http_Client;
+use Magento\Framework\Module\ModuleListInterface;
 
 class CheckoutRequest extends RequestAbstract
 {
+    const MODULE_NAME = 'Pagaleve_Payment';
     /**
      * @var HelperData
      */
@@ -49,6 +51,11 @@ class CheckoutRequest extends RequestAbstract
     /** @var $order */
     protected $order = false;
 
+    /** 
+     * @var ModuleListInterface $_moduleList 
+     */
+    protected $_moduleList;
+
     /**
      * @param ZendClientFactory $httpClientFactory
      * @param Json $json
@@ -58,6 +65,7 @@ class CheckoutRequest extends RequestAbstract
      * @param UrlInterface $urlBuilder
      * @param ResourceQuote $resourceQuote
      * @param Logger $logger
+     * @param ModuleListInterface $moduleList
      */
     public function __construct(
         ZendClientFactory $httpClientFactory,
@@ -67,12 +75,20 @@ class CheckoutRequest extends RequestAbstract
         HelperData $helperData,
         UrlInterface $urlBuilder,
         ResourceQuote $resourceQuote,
-        Logger $logger
+        Logger $logger,
+        ModuleListInterface $moduleList
     ) {
         parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData);
         $this->urlBuilder = $urlBuilder;
         $this->resourceQuote = $resourceQuote;
         $this->logger = $logger;
+        $this->_moduleList = $moduleList;
+    }
+
+    public function getVersion()
+    {
+        return $this->_moduleList
+            ->getOne(self::MODULE_NAME)['setup_version'];
     }
 
     /**
@@ -172,6 +188,7 @@ class CheckoutRequest extends RequestAbstract
             'metadata' => [
                 'transactionId' => $order->getIncrementId(),
                 'merchantName' => $order->getStore()->getName(),
+                'version' => $this->getVersion()
             ],
             'order' => [
                 'reference' => $order->getIncrementId(),
