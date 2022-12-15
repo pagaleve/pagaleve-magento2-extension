@@ -49,7 +49,7 @@ class Cancel implements HttpGetActionInterface
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
-        $resultRedirect->setUrl($this->helperData->getCheckoutPaymentUrl());
+        $resultRedirect->setUrl('/');
         return $resultRedirect;
     }
 }

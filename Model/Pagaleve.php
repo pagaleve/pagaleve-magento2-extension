@@ -37,6 +37,9 @@ class Pagaleve extends AbstractMethod
     protected $_canCapture              = true;
     protected $_canAuthorize            = true;
     protected $_isInitializeNeeded      = true;
+    protected $_canRefund               = true;
+    protected $_canRefundInvoicePartial = true;
+    
     protected $_infoBlockType = \Pagaleve\Payment\Block\Info\Pagaleve::class;
 
     /** 

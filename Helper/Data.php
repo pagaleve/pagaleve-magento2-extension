@@ -175,6 +175,7 @@ class Data extends AbstractHelper
         }
 
         $invoice = $this->invoiceService->prepareInvoice($order);
+        $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_ONLINE);
         $invoice->register();
 
         $captureId = $this->getCaptureIdByCheckoutData($checkoutData);
