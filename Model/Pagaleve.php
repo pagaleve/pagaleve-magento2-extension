@@ -108,6 +108,6 @@ class Pagaleve extends AbstractMethod
             $this->_redirectUrl = $checkoutResquestData['checkout_url'];
             return $this;
         }
-        throw new \Magento\Framework\Exception\LocalizedException(__('Message of error'));
+        throw new \Magento\Framework\Exception\LocalizedException(__('Houve um erro ao gerar o pedido, por favor, tente novamente.'));
     }
 }
