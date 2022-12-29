@@ -28,5 +28,6 @@
         <plugin disabled="false" name="Pagaleve_Payment_Plugin_Adminhtml_Order_View" sortOrder="10" type="Pagaleve\Payment\Plugin\CreditmemoViewAddButton"/>
     </type>
 
+    <preference for="Magento\Checkout\Controller\Onepage\Success" type="Pagaleve\Payment\Controller\Onepage\Success" />
 
 </config>

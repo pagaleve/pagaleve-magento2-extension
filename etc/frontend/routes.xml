@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
     <router id="standard">
         <route id="pagaleve" frontName="pagaleve">
-            <module name="Pagaleve_Payment"/>
+            <module name="Pagaleve_Payment" before="Magento_Checkout" />
         </route>
     </router>
 </config>

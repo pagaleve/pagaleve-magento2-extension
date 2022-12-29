@@ -40,12 +40,11 @@ class Logger extends \Monolog\Logger
     /**
      * @param string $message
      * @param array $context
-     * @return bool
      */
-    public function info($message, array $context = array())
+    public function info($message, array $context = array()): void
     {
         if ($this->helperConfig->enabledLog()) {
-            return parent::info($message, $context);
+            parent::info($message, $context);
         }
     }
 }

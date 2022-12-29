@@ -29,7 +29,7 @@ define(
             getInstructions: function () {
                 return window.checkoutConfig.payment.pagaleve.instructions
             },
-            placeOrder: function (data, event) {
+            /*placeOrder: function (data, event) {
                 if (event) {
                     event.preventDefault();
                 }
@@ -40,17 +40,17 @@ define(
                     this.beforePlaceOrder()
                 }, 1000);
 
-            },
+            },*/
             selectPaymentMethod: function() {
                 selectPaymentMethodAction(this.getData());
                 checkoutData.setSelectedPaymentMethod(this.item.method);
                 return true;
             },
-            beforePlaceOrder: function () {
+            /*beforePlaceOrder: function () {
                 var sections = ['cart'];
                 customerData.invalidate(sections);
                 window.location.replace(url.build('pagaleve/checkout/process'));
-            }
+            }*/
         });
     }
 );

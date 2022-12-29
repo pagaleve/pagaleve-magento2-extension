@@ -25,9 +25,11 @@ use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Helper\Data as HelperData;
 use Pagaleve\Payment\Logger\Logger;
 use Zend_Http_Client;
+use Magento\Framework\Module\ModuleListInterface;
 
 class CheckoutRequest extends RequestAbstract
 {
+    const MODULE_NAME = 'Pagaleve_Payment';
     /**
      * @var HelperData
      */
@@ -46,6 +48,14 @@ class CheckoutRequest extends RequestAbstract
     /** @var Logger $logger */
     private Logger $logger;
 
+    /** @var $order */
+    protected $order = false;
+
+    /** 
+     * @var ModuleListInterface $_moduleList 
+     */
+    protected $_moduleList;
+
     /**
      * @param ZendClientFactory $httpClientFactory
      * @param Json $json
@@ -55,6 +65,7 @@ class CheckoutRequest extends RequestAbstract
      * @param UrlInterface $urlBuilder
      * @param ResourceQuote $resourceQuote
      * @param Logger $logger
+     * @param ModuleListInterface $moduleList
      */
     public function __construct(
         ZendClientFactory $httpClientFactory,
@@ -64,12 +75,20 @@ class CheckoutRequest extends RequestAbstract
         HelperData $helperData,
         UrlInterface $urlBuilder,
         ResourceQuote $resourceQuote,
-        Logger $logger
+        Logger $logger,
+        ModuleListInterface $moduleList
     ) {
         parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData);
         $this->urlBuilder = $urlBuilder;
         $this->resourceQuote = $resourceQuote;
         $this->logger = $logger;
+        $this->_moduleList = $moduleList;
+    }
+
+    public function getVersion()
+    {
+        return $this->_moduleList
+            ->getOne(self::MODULE_NAME)['setup_version'];
     }
 
     /**
@@ -101,6 +120,32 @@ class CheckoutRequest extends RequestAbstract
     }
 
     /**
+     * @param $checkoutId
+     * @return array
+     * @throws AlreadyExistsException
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     * @throws \Zend_Http_Client_Exception
+     */
+    public function get($checkoutId): array
+    {
+        $client = $this->getClient($this->helperConfig->getCheckoutUrl() . "/" . $checkoutId);
+        $client->setmethod(Zend_Http_Client::GET);
+
+        $request = $client->request();
+        $requestBody = $request->getbody();
+
+        $this->logger->info(
+            'CheckoutRequestGet: ' . $client->getUri() . ' - ' . $requestBody
+        );
+
+        if ($request->getstatus() == 200) {
+            return $this->json->unserialize($requestBody);
+        }
+        return [];
+    }
+
+    /**
      * @param $requestBody
      * @return array
      * @throws LocalizedException
@@ -111,9 +156,10 @@ class CheckoutRequest extends RequestAbstract
     {
         $checkoutData = $this->json->unserialize($requestBody);
         if (isset($checkoutData['id']) && $checkoutData['id']) {
-            $quote = $this->getQuote();
-            $quote->setData('pagaleve_checkout_id', $checkoutData['id']);
-            $this->resourceQuote->save($quote);
+            $order = $this->getOrder();
+            $order->setData('pagaleve_checkout_id', $checkoutData['id']);
+            $order->setData('pagaleve_checkout_url', $checkoutData['checkout_url']);
+            //$this->resourceQuote->save($quote);
         }
         return $checkoutData;
     }
@@ -134,28 +180,28 @@ class CheckoutRequest extends RequestAbstract
      */
     protected function prepare() : array
     {
-        $quote = $this->getQuote();
-        $this->getQuote()->reserveOrderId();
-        $billingAddress = $quote->getBillingAddress();
+        $order = $this->getOrder();
+        $billingAddress = $order->getBillingAddress();
 
         $content = [
             'provider' => 'MAGENTO_2',
             'metadata' => [
-                'transactionId' => $quote->getReservedOrderId(),
-                'merchantName' => $quote->getStore()->getName(),
+                'transactionId' => $order->getIncrementId(),
+                'merchantName' => $order->getStore()->getName(),
+                'version' => $this->getVersion()
             ],
             'order' => [
-                'reference' => $quote->getReservedOrderId(),
+                'reference' => $order->getIncrementId(),
                 'tax' => 0,
-                'amount' => $this->helperData->formatAmount($quote->getGrandTotal()),
+                'amount' => $this->helperData->formatAmount($order->getGrandTotal()),
             ],
-            'reference' => $quote->getStore()->getName() . ' - ' . $quote->getReservedOrderId(),
+            'reference' => $order->getStore()->getName() . ' - ' . $order->getIncrementId(),
             'shopper' => [
                 'first_name' => $billingAddress->getFirstname(),
                 'last_name' => $billingAddress->getLastname(),
                 'phone' => $this->formatPhone($billingAddress->getTelephone()),
                 'email' => $billingAddress->getEmail(),
-                'cpf' => $quote->getCustomerTaxvat(),
+                'cpf' => $order->getCustomerTaxvat(),
                 'billing_address' => [
                     'name' => $billingAddress->getFirstname() .' ' . $billingAddress->getLastname(),
                     'city' => $billingAddress->getCity(),
@@ -174,10 +220,10 @@ class CheckoutRequest extends RequestAbstract
         ];
 
         $items = [];
-        foreach ($quote->getAllVisibleItems() as $item) {
+        foreach ($order->getAllVisibleItems() as $item) {
             $items[] = [
                 'name' => $item->getName(),
-                'quantity' => $item->getQty(),
+                'quantity' => $item->getQtyOrdered(),
                 'price' => $this->helperData->formatAmount($item->getPrice()),
                 'reference' => $item->getSku()
             ];
@@ -189,23 +235,36 @@ class CheckoutRequest extends RequestAbstract
     }
 
     /**
-     * @return Quote
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function getQuote(): Quote
+    public function getOrder()
     {
-        return $this->helperData->getQuote();
+        if (!$this->order) {
+            $message = __('Order is required');
+            throw new LocalizedException(__($message));
+        }
+        return $this->order;
     }
 
     /**
-     * @throws localizedexception
+     * @param $order
+     * @return void
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+    }
+
+    /**
+     * @throws LocalizedException
      */
     protected function validate()
     {
-        if (!$this->getQuote()->getId()) {
-            $message = __('Quote is required');
-            throw new localizedexception(__($message));
+        $order = $this->getOrder();
+        if (!$order->getIncrementId()) {
+            $message = __('Order is required');
+            throw new LocalizedException(__($message));
         }
     }
 }

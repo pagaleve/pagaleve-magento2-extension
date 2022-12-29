@@ -13,19 +13,20 @@ declare(strict_types=1);
 namespace Pagaleve\Payment\Cron;
 
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Quote\Model\Quote;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
+use Pagaleve\Payment\Helper\Data as HelperData;
 use Pagaleve\Payment\Model\Request\PaymentRequest;
-use Psr\Log\LoggerInterface;
-use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
+use Pagaleve\Payment\Model\Request\CheckoutRequest;
+use Pagaleve\Payment\Logger\Logger;
+use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 
 class ProcessPayments
 {
-    /** @var LoggerInterface $logger */
-    protected LoggerInterface $logger;
+    /** @var Logger $logger */
+    protected Logger $logger;
 
-    /** @var QuoteCollectionFactory $quoteCollectionFactory */
-    private QuoteCollectionFactory $quoteCollectionFactory;
+    /** @var OrderCollectionFactory $orderCollectionFactory */
+    private OrderCollectionFactory $orderCollectionFactory;
 
     /**
      * @var HelperConfig
@@ -33,29 +34,45 @@ class ProcessPayments
     protected HelperConfig $helperConfig;
 
     /**
+     * @var HelperData
+     */
+    protected HelperData $helperData;
+
+    /**
      * @var PaymentRequest
      */
     protected PaymentRequest $paymentRequest;
 
     /**
+     * @var CheckoutRequest
+     */
+    protected CheckoutRequest $checkoutRequest;
+
+    /**
      * Constructor
      *
-     * @param LoggerInterface $logger
-     * @param QuoteCollectionFactory $quoteCollectionFactory
+     * @param Logger $logger
+     * @param OrderCollectionFactory $orderCollectionFactory
      * @param HelperData $helperData
+     * @param HelperConfig $helperConfig
      * @param PaymentRequest $paymentRequest
+     * @param CheckoutRequest $checkoutRequest
      */
     public function __construct(
-        LoggerInterface $logger,
-        QuoteCollectionFactory $quoteCollectionFactory,
+        Logger $logger,
+        OrderCollectionFactory $orderCollectionFactory,
+        HelperData $helperData,
         HelperConfig $helperConfig,
-        PaymentRequest $paymentRequest
+        PaymentRequest $paymentRequest,
+        CheckoutRequest $checkoutRequest
     )
     {
         $this->logger = $logger;
-        $this->quoteCollectionFactory = $quoteCollectionFactory;
+        $this->orderCollectionFactory = $orderCollectionFactory;
+        $this->helperData = $helperData;
         $this->helperConfig = $helperConfig;
         $this->paymentRequest = $paymentRequest;
+        $this->checkoutRequest = $checkoutRequest;
     }
 
     /**
@@ -65,23 +82,53 @@ class ProcessPayments
      */
     public function execute()
     {
-        $quoteList = $this->quoteCollectionFactory->create();
-        $quoteList->addFieldToFilter('pagaleve_checkout_id', ['notnull' => true]);
-        $quoteList->addFieldToFilter('pagaleve_payment_id', ['null' => true]);
-
+        $collection = $this->orderCollectionFactory->create()
+            ->addAttributeToSelect('*');
         $deadLine = $this->helperConfig->getRetryDeadline();
-        $fromDate = date('Y-m-d H:i:s', strtotime('- ' . $deadLine . ' minute'));
+        $fromDate = date('Y-m-d H:i:s', strtotime('- ' . $deadLine . ' days'));
         $toDate = date('Y-m-d H:i:s');
-        $quoteList->addFieldToFilter('updated_at', ['from' => $fromDate, 'to' => $toDate]);
-
-        /** @var Quote $quote */
-        foreach ($quoteList as $quote) {
-
+        $paymentMethod = 'pagaleve';
+        $status = $this->helperConfig->getPaymentStatus();
+        $collection->addFieldToFilter('status', $status)
+            ->addFieldToFilter(
+                'created_at',
+                ['from' => $fromDate, 'to' => $toDate]
+            );
+        $collection->getSelect()
+            ->join(
+                ["sop" => "sales_order_payment"],
+                'main_table.entity_id = sop.parent_id',
+                array('method')
+            )
+            ->where('sop.method = ?', $paymentMethod);
+        $this->logger->info($collection->getSelect()->__toString());
+        
+        foreach ($collection as $order) {
             try {
-                $this->paymentRequest->setQuote($quote);
-                $checkoutData = $this->paymentRequest->create();
-                if (count($checkoutData) >= 1) {
-                    $this->logger->info("Payment create success to quoteId: " . $quote->getId());
+                //get checkout
+                if($order->getPagaleveCheckoutId() != '') {
+                    $checkoutData = $this->checkoutRequest->get($order->getPagaleveCheckoutId());
+                    $this->logger->info(print_r($checkoutData, true));
+                    if(is_array($checkoutData) && isset($checkoutData['state'])) {
+                        if($checkoutData['state'] == 'AUTHORIZED') {
+                            $this->paymentRequest->setOrder($order);
+                            $paymentData = $this->paymentRequest->create();
+                            if (count($paymentData) >= 1) {
+                                $this->helperData->createInvoice($order, $paymentData);
+                                $this->logger->info("Payment create success to orderId: " . $order->getId());
+                            }
+                        } elseif($checkoutData['state'] == 'COMPLETED') {
+                            $paymentData = $this->paymentRequest->get($order->getPagalevePaymentId());
+                            if (count($paymentData) >= 1) {
+                                $this->helperData->createInvoice($order, $paymentData);
+                            }
+                        } elseif($checkoutData['state'] == 'EXPIRED' || $checkoutData['state'] == 'CANCELED') {
+                            if ($order->canCancel()) {
+                                $order->cancel()->save();
+                                $this->logger->info("Order was canceled because checkout was '" . $checkoutData['state'] . "'. orderId: " . $order->getId());
+                            }
+                        }
+                    }
                 }
             } catch (\Zend_Http_Client_Exception | LocalizedException $e) {
                 $this->logger->error($e->getMessage());

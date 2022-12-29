@@ -120,11 +120,12 @@ class RequestAbstract
     protected function formatPhone($phone)
     {
         $formattedPhone = preg_replace('/[^0-9]/', '', $phone);
-        $matches = [];
+        return $formattedPhone;
+        /*$matches = [];
         preg_match('/^([0-9]{2})([0-9]{4,5})([0-9]{4})$/', $formattedPhone, $matches);
         if ($matches) {
             return '('.$matches[1].')'.$matches[2].'-'.$matches[3];
         }
-        return $phone;
+        return $phone;*/
     }
 }

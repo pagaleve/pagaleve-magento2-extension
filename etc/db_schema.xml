@@ -11,6 +11,7 @@
         <column name="pagaleve_payment_id" nullable="true" xsi:type="varchar" comment="Pagaleve Payment ID" length="255"/>
         <column name="pagaleve_release_id" nullable="true" xsi:type="varchar" comment="Pagaleve Release ID" length="255"/>
         <column name="pagaleve_expiration_date" nullable="true" xsi:type="datetime" comment="Pagaleve Expiration Date"/>
+        <column name="pagaleve_checkout_url" nullable="true" xsi:type="text" comment="Pagaleve Checkout Url" />
     </table>
     <table name="sales_order_grid">
         <column name="pagaleve_checkout_id" nullable="true" xsi:type="varchar" comment="Pagaleve Checkout ID" length="255"/>
