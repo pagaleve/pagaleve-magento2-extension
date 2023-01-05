@@ -97,7 +97,7 @@ class Approve implements HttpGetActionInterface
                     if ($checkoutData['state'] == 'AUTHORIZED') {
                         $this->paymentRequest->setOrder($order);
                         $paymentData = $this->paymentRequest->create();
-                        if (count($paymentData) >= 1) {
+                        if (is_array($paymentData) && count($paymentData) >= 1) {
                             $this->helperData->createInvoice($order, $paymentData);
                         }
                     }
