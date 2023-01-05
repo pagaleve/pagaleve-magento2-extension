@@ -75,11 +75,11 @@ class Pagaleve extends AbstractMethod
         Data $paymentData,
         ScopeConfigInterface $scopeConfig,
         Logger $logger,
+        CheckoutRequest $checkoutRequest,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = [],
-        DirectoryHelper $directory = null,
-        CheckoutRequest $checkoutRequest
+        DirectoryHelper $directory = null
     ) {
         $this->checkoutRequest = $checkoutRequest;
         parent::__construct(
