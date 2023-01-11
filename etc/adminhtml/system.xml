@@ -13,6 +13,7 @@
 	<system>
 		<section id="payment" sortOrder="1000" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
             <group id="pagaleve" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
+                <attribute type="activity_path">payment/pagaleve/active</attribute>
                 <label><![CDATA[<div class="pagaleve-payment-logo"></div><div class="pagaleve-payment-byline">Pagamento por parcelamento via PIX.<br/>Parcelamento em 4X via PIX.</div>]]></label>
                 <fieldset_css>complex pagaleve-payment-section</fieldset_css>
                 <frontend_model>Pagaleve\Payment\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
