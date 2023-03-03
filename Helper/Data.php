@@ -224,7 +224,10 @@ class Data extends AbstractHelper
      */
     public function formatAmount($amount): ?int
     {
-        return $this->onlyNumbers(round($amount, 2) * 100);
+        $amount = round($amount, 2) * 100;
+        $amount = (string) $amount;
+
+        return $this->onlyNumbers($amount);
     }
 
     /**
