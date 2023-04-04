@@ -4,7 +4,7 @@
  * @Email: warley.elias@pentagrama.com.br
  * @Date: 2023-03-30 15:53:53
  * @Last Modified by: Warley Elias
- * @Last Modified time: 2023-04-03 16:51:16
+ * @Last Modified time: 2023-04-04 16:58:57
  */
 
 /**
@@ -12,7 +12,7 @@
  * @var Pagaleve\Payment\Block\Order\Success $block
  */
 ?>
-<?php if ($block->getMethodCode() === 'pagaleve') : ?>
+<?php if ($block->getMethodCode() === 'pagaleve' && $block->isTransparentCheckoutEnabled()) : ?>
     <?php $_order = $block->getOrder(); ?>
     <div id="pagaleve-transparent-checkout-root"></div>
     <script src="https://transparent-checkout.pagaleve.com.br/pagaleve-transparent-checkout-installer.js"></script>
