@@ -37,6 +37,12 @@
                         <label>Retry deadline</label>
                         <config_path>payment/pagaleve/retry_deadline</config_path>
                     </field>
+                    <!-- enable transparent checkout -->
+                    <field id="enabled_transparent_checkout" type="select" sortOrder="70" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Enabled Transparent Checkout</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/pagaleve/enabled_transparent_checkout</config_path>
+                    </field>
                     <field id="sort_order" type="text" sortOrder="1000" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Sort Order</label>
                         <config_path>payment/pagaleve/sort_order</config_path>

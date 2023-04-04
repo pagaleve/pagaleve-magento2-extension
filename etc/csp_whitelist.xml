@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="pagaleve-transparent-script" type="host">*.pagaleve.com.br</value>
+            </values>
+        </policy>
+        <policy id="frame-src">
+            <values>
+                <value id="pagaleve-transparent-frame-io" type="host">*.pagaleve.io</value>
+                <value id="pagaleve-transparent-frame" type="host">*.pagaleve.com.br</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="pagaleve-transparent-img" type="host">*.pagaleve.com.br</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

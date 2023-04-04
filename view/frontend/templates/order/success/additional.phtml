@@ -1,0 +1,38 @@
+<?php
+/*
+ * @Author: Warley Elias
+ * @Email: warley.elias@pentagrama.com.br
+ * @Date: 2023-03-30 15:53:53
+ * @Last Modified by: Warley Elias
+ * @Last Modified time: 2023-04-03 16:51:16
+ */
+
+/**
+ * @see Pagaleve\Payment\Block\Order\Success
+ * @var Pagaleve\Payment\Block\Order\Success $block
+ */
+?>
+<?php if ($block->getMethodCode() === 'pagaleve') : ?>
+    <?php $_order = $block->getOrder(); ?>
+    <div id="pagaleve-transparent-checkout-root"></div>
+    <script src="https://transparent-checkout.pagaleve.com.br/pagaleve-transparent-checkout-installer.js"></script>
+
+    <div class="pagaleve-payment-success-details">
+        <!-- add image -->
+        <img src="<?= /* @noEscape */ $block->getViewFileUrl('Pagaleve_Payment::images/pagaleve-logo.png'); ?>" alt="Pagaleve" />
+        <p>
+            <?= /* @noEscape */ __('Your payment will start soon, a pop-up will open to you complete the payment. Please wait.'); ?>
+        </p>
+    </div>
+    <script type="text/x-magento-init">
+        {
+            "*": {
+                "pagaleve_transparent_checkout": {
+                    "checkoutId": "<?= /* @noEscape */ $_order->getPagaleveCheckoutId(); ?>",
+                    "checkoutUrl": "<?= /* @noEscape */ $_order->getPagaleveCheckoutUrl(); ?>",
+                    "retrieveAbandonedCartUrl": "<?= /* @noEscape */ $block->getRetrieveAbandonedCartUrl($_order->getId()); ?>"
+                }
+            }
+        }
+    </script>
+<?php endif; ?>
