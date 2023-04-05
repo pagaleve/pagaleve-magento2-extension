@@ -117,6 +117,6 @@ class Success extends Template {
     }
 
     public function isTransparentCheckoutEnabled() {
-        $this->helperConfig->isTransparentCheckoutEnabled();
+        return $this->helperConfig->isTransparentCheckoutEnabled();
     }
 }
