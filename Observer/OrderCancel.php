@@ -19,6 +19,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Model\Pagaleve;
+use Pagaleve\Payment\Model\PagaleveUpFront;
 use Pagaleve\Payment\Model\Request\Payment\ReleaseRequest;
 use Magento\Sales\Api\OrderRepositoryInterface;
 
@@ -64,7 +65,10 @@ class OrderCancel implements ObserverInterface
             return $this;
         }
 
-        if ($order->getPayment()->getMethod() != Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE) {
+        if (
+            $order->getPayment()->getMethod() != Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE &&
+            $order->getPayment()->getMethod() != PagaleveUpFront::PAYMENT_METHOD_PAGALEVE_CODE
+        ) {
             return $this;
         }
 

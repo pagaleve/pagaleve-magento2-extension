@@ -224,6 +224,7 @@ class Data extends AbstractHelper
      */
     public function formatAmount($amount): ?int
     {
+        $amount = (float) $amount;
         $amount = round($amount, 2) * 100;
         $amount = (string) $amount;
 

@@ -95,12 +95,12 @@ class CheckoutRequest extends RequestAbstract
      * @return array
      * @throws localizedexception|\Zend_Http_Client_Exception
      */
-    public function create(): array
+    public function create($pixUpFront = false): array
     {
         $this->validate();
 
         $client = $this->getClient($this->helperConfig->getCheckoutUrl());
-        $body = $this->json->serialize($this->prepare());
+        $body = $this->json->serialize($this->prepare($pixUpFront));
 
         $client->setrawdata($body, 'application/json');
         $client->setmethod(Zend_Http_Client::POST);
@@ -178,7 +178,7 @@ class CheckoutRequest extends RequestAbstract
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    protected function prepare() : array
+    protected function prepare($pixUpFront) : array
     {
         $order = $this->getOrder();
         $billingAddress = $order->getBillingAddress();
@@ -196,6 +196,7 @@ class CheckoutRequest extends RequestAbstract
                 'amount' => $this->helperData->formatAmount($order->getGrandTotal()),
             ],
             'reference' => $order->getStore()->getName() . ' - ' . $order->getIncrementId(),
+            'is_pix_upfront' => $pixUpFront,
             'shopper' => [
                 'first_name' => $billingAddress->getFirstname(),
                 'last_name' => $billingAddress->getLastname(),

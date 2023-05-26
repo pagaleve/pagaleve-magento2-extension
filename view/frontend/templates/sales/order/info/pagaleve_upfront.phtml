@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @var $block \Pagaleve\Payment\Block\Info\PagaleveUpFront
+ */
+$order = $block->getOrder();
+?>
+<section class="admin__page-section order-view-billing-shipping">
+    <div class="admin__page-section-title">
+        <span class="title"><?= $block->escapeHtml(__('Pagaleve')) ?></span>
+    </div>
+    <div class="admin__page-section-content">
+        <div class="admin__page-section-item order-payment-method pagaleve">
+            <div class="admin__page-section-item-title">
+                <span class="title"><?= $block->escapeHtml(__('PIX UpFront')) ?></span>
+            </div>
+        </div>
+    </div>
+</section>

@@ -4,7 +4,7 @@
  * @Email: warley.elias@pentagrama.com.br
  * @Date: 2022-12-12 08:17:19
  * @Last Modified by: Warley Elias
- * @Last Modified time: 2022-12-12 12:49:29
+ * @Last Modified time: 2023-05-26 14:46:51
  */
 
 namespace Pagaleve\Payment\Controller\Onepage;
@@ -85,7 +85,8 @@ class Success extends CheckoutOnepageSuccess {
 
         $passthroug = $this->getRequest()->getParam('passthrough');
         $isTransparentCheckoutEnabled = $this->helperConfig->isTransparentCheckoutEnabled();
-        if ($order->getPayment()->getMethod() == 'pagaleve' && !$passthroug && !$isTransparentCheckoutEnabled) {
+        if (    ($order->getPayment()->getMethod() == 'pagaleve' || $order->getPayment()->getMethod() == 'pagaleve_upfront')
+                && !$passthroug && !$isTransparentCheckoutEnabled) {
             //Redirect to Pagaleve
             $pagaleveCheckoutUrl = $order->getPagaleveCheckoutUrl();
             $this->_redirect($pagaleveCheckoutUrl);

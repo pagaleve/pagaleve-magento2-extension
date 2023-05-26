@@ -87,9 +87,10 @@ class ProcessPayments
         $deadLine = $this->helperConfig->getRetryDeadline();
         $fromDate = date('Y-m-d H:i:s', strtotime('- ' . $deadLine . ' days'));
         $toDate = date('Y-m-d H:i:s');
-        $paymentMethod = 'pagaleve';
+        $paymentMethod = ['pagaleve', 'pagaleve_upfront'];
         $status = $this->helperConfig->getPaymentStatus();
-        $collection->addFieldToFilter('status', $status)
+        $collection
+            ->addFieldToFilter('status', ['in' => $status])
             ->addFieldToFilter(
                 'created_at',
                 ['from' => $fromDate, 'to' => $toDate]
@@ -100,7 +101,7 @@ class ProcessPayments
                 'main_table.entity_id = sop.parent_id',
                 array('method')
             )
-            ->where('sop.method = ?', $paymentMethod);
+            ->where('sop.method IN (?)', $paymentMethod);
         $this->logger->info($collection->getSelect()->__toString());
         
         foreach ($collection as $order) {

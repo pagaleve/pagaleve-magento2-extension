@@ -40,6 +40,21 @@
                 <release_url_sandbox>https://sandbox-api.pagaleve.io/v1/payments/%s/release</release_url_sandbox>
                 <sort_order>1</sort_order>
 			</pagaleve>
+            <pagaleve_upfront>
+                <active>1</active>
+                <logger>1</logger>
+				<model>Pagaleve\Payment\Model\PagaleveUpFront</model>
+				<order_status>pending</order_status>
+				<title>PIX à Vista</title>
+				<allowspecific>0</allowspecific>
+                <group>offline</group>
+                <instructions>instructions</instructions>
+                <retry_deadline>2</retry_deadline>
+                <payment_action>authorize</payment_action>
+                <order_status_new>pending</order_status_new>
+                <order_status_processing>processing</order_status_processing>
+                <sort_order>2</sort_order>
+			</pagaleve_upfront>
 		</payment>
 	</default>
 </config>
