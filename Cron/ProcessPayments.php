@@ -102,14 +102,14 @@ class ProcessPayments
                 array('method')
             )
             ->where('sop.method IN (?)', $paymentMethod);
-        $this->logger->info($collection->getSelect()->__toString());
+        //$this->logger->info($collection->getSelect()->__toString());
         
         foreach ($collection as $order) {
             try {
                 //get checkout
                 if($order->getPagaleveCheckoutId() != '') {
                     $checkoutData = $this->checkoutRequest->get($order->getPagaleveCheckoutId());
-                    $this->logger->info(print_r($checkoutData, true));
+                    //$this->logger->info(print_r($checkoutData, true));
                     if(is_array($checkoutData) && isset($checkoutData['state'])) {
                         if($checkoutData['state'] == 'AUTHORIZED') {
                             $this->paymentRequest->setOrder($order);
@@ -119,9 +119,11 @@ class ProcessPayments
                                 $this->logger->info("Payment create success to orderId: " . $order->getId());
                             }
                         } elseif($checkoutData['state'] == 'COMPLETED') {
-                            $paymentData = $this->paymentRequest->get($order->getPagalevePaymentId());
-                            if (count($paymentData) >= 1) {
-                                $this->helperData->createInvoice($order, $paymentData);
+                            if($order->getPagalevePaymentId()) {
+                                $paymentData = $this->paymentRequest->get($order->getPagalevePaymentId());
+                                if (count($paymentData) >= 1) {
+                                    $this->helperData->createInvoice($order, $paymentData);
+                                }
                             }
                         } elseif($checkoutData['state'] == 'EXPIRED' || $checkoutData['state'] == 'CANCELED') {
                             if ($order->canCancel()) {
@@ -131,7 +133,7 @@ class ProcessPayments
                         }
                     }
                 }
-            } catch (\Zend_Http_Client_Exception | LocalizedException $e) {
+            } catch (\Laminas\Http\Client\Exception\RuntimeException | LocalizedException $e) {
                 $this->logger->error($e->getMessage());
             }
 

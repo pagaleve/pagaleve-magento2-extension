@@ -15,7 +15,7 @@ namespace Pagaleve\Payment\Model\Request;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\HTTP\ZendClientFactory;
+use Magento\Framework\HTTP\LaminasClientFactory;
 use Magento\Framework\Math\Random;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\UrlInterface;
@@ -24,7 +24,6 @@ use Magento\Quote\Model\ResourceModel\Quote as ResourceQuote;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Helper\Data as HelperData;
 use Pagaleve\Payment\Logger\Logger;
-use Zend_Http_Client;
 use Magento\Framework\Module\ModuleListInterface;
 
 class CheckoutRequest extends RequestAbstract
@@ -46,7 +45,7 @@ class CheckoutRequest extends RequestAbstract
     private ResourceQuote $resourceQuote;
 
     /** @var Logger $logger */
-    private Logger $logger;
+    protected Logger $logger;
 
     /** @var $order */
     protected $order = false;
@@ -57,7 +56,7 @@ class CheckoutRequest extends RequestAbstract
     protected $_moduleList;
 
     /**
-     * @param ZendClientFactory $httpClientFactory
+     * @param LaminasClientFactory $httpClientFactory
      * @param Json $json
      * @param HelperConfig $helperConfig
      * @param Random $mathRandom
@@ -68,7 +67,7 @@ class CheckoutRequest extends RequestAbstract
      * @param ModuleListInterface $moduleList
      */
     public function __construct(
-        ZendClientFactory $httpClientFactory,
+        LaminasClientFactory $httpClientFactory,
         Json $json,
         HelperConfig $helperConfig,
         Random $mathRandom,
@@ -78,7 +77,7 @@ class CheckoutRequest extends RequestAbstract
         Logger $logger,
         ModuleListInterface $moduleList
     ) {
-        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData);
+        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData, $logger);
         $this->urlBuilder = $urlBuilder;
         $this->resourceQuote = $resourceQuote;
         $this->logger = $logger;
@@ -93,68 +92,37 @@ class CheckoutRequest extends RequestAbstract
 
     /**
      * @return array
-     * @throws localizedexception|\Zend_Http_Client_Exception
+     * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
      */
     public function create($pixUpFront = false): array
     {
         $this->validate();
 
-        $client = $this->getClient($this->helperConfig->getCheckoutUrl());
         $body = $this->json->serialize($this->prepare($pixUpFront));
+        $response = $this->makeRequest($this->helperConfig->getCheckoutUrl(), \Laminas\Http\Request::METHOD_POST, $body);
 
-        $client->setrawdata($body, 'application/json');
-        $client->setmethod(Zend_Http_Client::POST);
-
-        $request = $client->request();
-        $requestBody = $request->getbody();
-
-        $this->logger->info(
-            'CheckoutRequest: ' . $client->getUri() . ' - ' . $requestBody
-        );
-
-        if ($request->getstatus() == 201) {
-            return $this->success($requestBody);
-        } else {
-            return $this->fail($requestBody);
-        }
+        return $this->success($response);
     }
 
     /**
      * @param $checkoutId
      * @return array
-     * @throws AlreadyExistsException
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
-     * @throws \Zend_Http_Client_Exception
+     * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
      */
     public function get($checkoutId): array
     {
-        $client = $this->getClient($this->helperConfig->getCheckoutUrl() . "/" . $checkoutId);
-        $client->setmethod(Zend_Http_Client::GET);
+        $response = $this->makeRequest($this->helperConfig->getCheckoutUrl() . "/" . $checkoutId, \Laminas\Http\Request::METHOD_GET);
 
-        $request = $client->request();
-        $requestBody = $request->getbody();
-
-        $this->logger->info(
-            'CheckoutRequestGet: ' . $client->getUri() . ' - ' . $requestBody
-        );
-
-        if ($request->getstatus() == 200) {
-            return $this->json->unserialize($requestBody);
-        }
-        return [];
+        return $response;
     }
 
     /**
-     * @param $requestBody
+     * @param $checkoutData
      * @return array
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
-     * @throws AlreadyExistsException
+     * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
      */
-    protected function success($requestBody): array
+    protected function success($checkoutData): array
     {
-        $checkoutData = $this->json->unserialize($requestBody);
         if (isset($checkoutData['id']) && $checkoutData['id']) {
             $order = $this->getOrder();
             $order->setData('pagaleve_checkout_id', $checkoutData['id']);

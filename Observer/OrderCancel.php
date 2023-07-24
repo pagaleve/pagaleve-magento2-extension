@@ -73,17 +73,19 @@ class OrderCancel implements ObserverInterface
         }
 
         try {
-            $releaseData = $this->releaseRequest->create(
-                $order->getData('pagaleve_payment_id'),
-                $order->getGrandTotal()
-            );
+            if($order->getData('pagaleve_payment_id')) {
+                $releaseData = $this->releaseRequest->create(
+                    $order->getData('pagaleve_payment_id'),
+                    $order->getGrandTotal()
+                );
+            }
 
             if (isset($releaseData['id']) && $releaseData['id']) {
                 $order->setData('pagaleve_release_id', $releaseData['id']);
                 $this->orderRepository->save($order);
             }
 
-        } catch (AlreadyExistsException|LocalizedException|\Zend_Http_Client_Exception $e) {
+        } catch (AlreadyExistsException|LocalizedException|\Laminas\Http\Client\Exception\RuntimeException $e) {
             throw new LocalizedException(__($e->getMessage()));
             //return $this;
         }

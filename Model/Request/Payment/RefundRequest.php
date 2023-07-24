@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Pagaleve\Payment\Model\Request\Payment;
 
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\HTTP\ZendClientFactory;
+use Magento\Framework\HTTP\LaminasClientFactory;
 use Magento\Framework\Math\Random;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Sales\Model\Order\Invoice;
@@ -21,7 +21,6 @@ use Magento\Sales\Model\ResourceModel\Order\Invoice as ResourceInvoice;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Helper\Data as HelperData;
 use Pagaleve\Payment\Logger\Logger;
-use Zend_Http_Client;
 use Pagaleve\Payment\Model\Request\RequestAbstract;
 
 class RefundRequest extends RequestAbstract
@@ -36,10 +35,10 @@ class RefundRequest extends RequestAbstract
     protected Invoice $invoice;
 
     /** @var Logger $logger */
-    private Logger $logger;
+    protected Logger $logger;
 
     /**
-     * @param ZendClientFactory $httpClientFactory
+     * @param LaminasClientFactory $httpClientFactory
      * @param Json $json
      * @param HelperConfig $helperConfig
      * @param Random $mathRandom
@@ -48,7 +47,7 @@ class RefundRequest extends RequestAbstract
      * @param Logger $logger
      */
     public function __construct(
-        ZendClientFactory $httpClientFactory,
+        LaminasClientFactory $httpClientFactory,
         Json $json,
         HelperConfig $helperConfig,
         Random $mathRandom,
@@ -56,7 +55,7 @@ class RefundRequest extends RequestAbstract
         ResourceInvoice $resourceInvoice,
         Logger $logger
     ) {
-        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData);
+        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData, $logger);
         $this->resourceInvoice = $resourceInvoice;
         $this->logger = $logger;
     }
@@ -68,30 +67,15 @@ class RefundRequest extends RequestAbstract
      * @param $description
      * @return array
      * @throws LocalizedException
-     * @throws \Zend_Http_Client_Exception
+     * @throws \Laminas\Http\Client\Exception\RuntimeException
      */
     public function create($paymentId, $amount, $reason, $description): array
     {
         $uri = sprintf($this->helperConfig->getPaymentRefundUrl(), $paymentId);
-
-        $client = $this->getClient($uri);
         $body = $this->json->serialize($this->prepare($amount, $reason, $description));
+        $response = $this->makeRequest($uri, \Laminas\Http\Request::METHOD_POST, $body);
 
-        $client->setrawdata($body, 'application/json');
-        $client->setmethod(Zend_Http_Client::POST);
-
-        $request = $client->request();
-        $requestBody = $request->getbody();
-
-        $this->logger->info(
-            'RefundRequest: ' . $client->getUri() . ' - ' . $requestBody
-        );
-
-        if ($request->getstatus() == 200) {
-            return $this->success($requestBody);
-        } else {
-            return $this->fail($requestBody);
-        }
+        return $this->success($response);
     }
 
     /**
@@ -100,7 +84,7 @@ class RefundRequest extends RequestAbstract
      */
     protected function success($requestBody): array
     {
-        return $this->json->unserialize($requestBody);
+        return $requestBody;
     }
 
     /**

@@ -79,7 +79,7 @@ class CreateOrders
                 if ($orderId >= 1) {
                     $this->logger->info("Order created success." . $orderId);
                 }
-            } catch (\Zend_Http_Client_Exception | LocalizedException $e) {
+            } catch (\Laminas\Http\Client\Exception\RuntimeException | LocalizedException $e) {
                 $this->logger->error($e->getMessage());
             }
 

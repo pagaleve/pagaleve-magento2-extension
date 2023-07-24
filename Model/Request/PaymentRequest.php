@@ -15,7 +15,7 @@ namespace Pagaleve\Payment\Model\Request;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\HTTP\ZendClientFactory;
+use Magento\Framework\HTTP\LaminasClientFactory;
 use Magento\Framework\Math\Random;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Quote\Model\Quote;
@@ -24,7 +24,6 @@ use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Helper\Data as HelperData;
 use Pagaleve\Payment\Logger\Logger;
 use Pagaleve\Payment\Model\Config\Source\PaymentAction;
-use Zend_Http_Client;
 
 class PaymentRequest extends RequestAbstract
 {
@@ -39,13 +38,13 @@ class PaymentRequest extends RequestAbstract
     protected ResourceQuote $resourceQuote;
 
     /** @var Logger $logger */
-    private Logger $logger;
+    protected Logger $logger;
 
     /** @var $order */
     protected $order = false;
 
     /**
-     * @param ZendClientFactory $httpClientFactory
+     * @param LaminasClientFactory $httpClientFactory
      * @param Json $json
      * @param HelperConfig $helperConfig
      * @param Random $mathRandom
@@ -54,7 +53,7 @@ class PaymentRequest extends RequestAbstract
      * @param Logger $logger
      */
     public function __construct(
-        ZendClientFactory $httpClientFactory,
+        LaminasClientFactory $httpClientFactory,
         Json $json,
         HelperConfig $helperConfig,
         Random $mathRandom,
@@ -62,75 +61,43 @@ class PaymentRequest extends RequestAbstract
         ResourceQuote $resourceQuote,
         Logger $logger
     ) {
-        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData);
+        parent::__construct($httpClientFactory, $json, $helperConfig, $mathRandom, $helperData, $logger);
         $this->resourceQuote = $resourceQuote;
         $this->logger = $logger;
     }
 
     /**
      * @return array
-     * @throws LocalizedException|\Zend_Http_Client_Exception
+     * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
      */
     public function create(): array
     {
         $this->validate();
 
-        $client = $this->getClient($this->helperConfig->getPaymentUrl());
         $body = $this->json->serialize($this->prepare());
+        $response = $this->makeRequest($this->helperConfig->getPaymentUrl(), \Laminas\Http\Request::METHOD_POST, $body);
 
-        $client->setrawdata($body, 'application/json');
-        $client->setmethod(Zend_Http_Client::POST);
-
-        $request = $client->request();
-        $requestBody = $request->getbody();
-
-        $this->logger->info(
-            'PaymentRequest: ' . $client->getUri() . ' - ' . $requestBody
-        );
-
-        if ($request->getstatus() == 201) {
-            return $this->success($requestBody);
-        }
-
-        return $this->fail($requestBody);
+        return $this->success($response);
     }
 
     /**
      * @param $paymentId
      * @return array
-     * @throws AlreadyExistsException
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
-     * @throws \Zend_Http_Client_Exception
+     * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
      */
     public function get($paymentId): array
     {
-        $client = $this->getClient($this->helperConfig->getPaymentUrl() . "/" . $paymentId);
-        $client->setmethod(Zend_Http_Client::GET);
-
-        $request = $client->request();
-        $requestBody = $request->getbody();
-
-        $this->logger->info(
-            'PaymentRequestGet: ' . $client->getUri() . ' - ' . $requestBody
-        );
-
-        if ($request->getstatus() == 200) {
-            return $this->json->unserialize($requestBody);
-        }
-        return [];
+        $response = $this->makeRequest($this->helperConfig->getPaymentUrl() . "/" . $paymentId, \Laminas\Http\Request::METHOD_GET);
+        return $response;
     }
 
     /**
-     * @param $requestBody
+     * @param $checkoutData
      * @return array
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
-     * @throws AlreadyExistsException
+     * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
      */
-    protected function success($requestBody): array
+    protected function success($checkoutData): array
     {
-        $checkoutData = $this->json->unserialize($requestBody);
         if (isset($checkoutData['id']) && $checkoutData['id']) {
             $order = $this->getOrder();
             $order->setData('pagaleve_payment_id', $checkoutData['id']);

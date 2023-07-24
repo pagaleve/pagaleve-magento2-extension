@@ -58,7 +58,7 @@ class Process implements HttpGetActionInterface
      * @return Redirect
      * @throws LocalizedException
      * @throws NoSuchEntityException
-     * @throws \Zend_Http_Client_Exception
+     * @throws \Laminas\Http\Client\Exception\RuntimeException
      */
     public function execute(): Redirect
     {

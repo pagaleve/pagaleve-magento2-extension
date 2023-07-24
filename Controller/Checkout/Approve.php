@@ -107,7 +107,7 @@ class Approve implements HttpGetActionInterface
             $resultRedirect->setPath('checkout/onepage/success?passthrough=true');
             return $resultRedirect;
 
-        } catch (\Zend_Http_Client_Exception | LocalizedException $e) {
+        } catch (\Laminas\Http\Client\Exception\RuntimeException | LocalizedException $e) {
             $resultRedirect->setUrl($this->helperData->getCheckoutPaymentUrl());
             return $resultRedirect;
         }

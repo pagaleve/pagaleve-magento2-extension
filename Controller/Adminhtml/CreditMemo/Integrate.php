@@ -98,7 +98,7 @@ class Integrate extends Action
 
             $creditMemo->save();
 
-        } catch (AlreadyExistsException|LocalizedException|\Zend_Http_Client_Exception $e) {
+        } catch (AlreadyExistsException|LocalizedException|\Laminas\Http\Client\Exception\RuntimeException $e) {
             throw new LocalizedException(__($e->getMessage()));
         }
 

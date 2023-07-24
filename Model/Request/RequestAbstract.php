@@ -13,21 +13,21 @@ declare(strict_types=1);
 namespace Pagaleve\Payment\Model\Request;
 
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\HTTP\ZendClient;
-use Magento\Framework\HTTP\ZendClientFactory;
+use Magento\Framework\HTTP\LaminasClient;
+use Magento\Framework\HTTP\LaminasClientFactory;
 use Magento\Framework\Math\Random;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 use Pagaleve\Payment\Helper\Data as HelperData;
-use Zend_Http_Client;
 use Magento\Framework\Serialize\Serializer\Json;
+use Pagaleve\Payment\Logger\Logger;
 
 class RequestAbstract
 {
     /** @var json $json */
     protected json $json;
 
-    /** @var ZendClientFactory $httpClientFactory */
-    protected ZendClientFactory $httpClientFactory;
+    /** @var LaminasClientFactory $httpClientFactory */
+    protected LaminasClientFactory $httpClientFactory;
 
     /** @var HelperConfig $helperConfig */
     protected HelperConfig $helperConfig;
@@ -38,70 +38,127 @@ class RequestAbstract
     /** @var Random $mathRandom */
     protected Random $mathRandom;
 
+    /** @var Logger $logger */
+    protected Logger $logger;
+
     /**
-     * @param ZendClientFactory $httpClientFactory
+     * @param LaminasClientFactory $httpClientFactory
      * @param Json $json
      * @param HelperConfig $helperConfig
      * @param Random $mathRandom
      * @param HelperData $helperData
+     * @param Logger $logger
      */
     public function __construct(
-        ZendClientFactory $httpClientFactory,
+        LaminasClientFactory $httpClientFactory,
         json $json,
         HelperConfig $helperConfig,
         Random $mathRandom,
-        HelperData $helperData
+        HelperData $helperData,
+        Logger $logger
     ) {
         $this->httpClientFactory = $httpClientFactory;
         $this->json = $json;
         $this->helperConfig = $helperConfig;
         $this->mathRandom = $mathRandom;
         $this->helperData = $helperData;
+        $this->logger = $logger;
     }
 
     /**
      * @return string
-     * @throws \Zend_Http_Client_Exception
+     * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
      */
     protected function getToken(): string
     {
         $client = $this->httpClientFactory->create();
         $client->setUri($this->helperConfig->getTokenUrl());
-        $client->setConfig(['strict'=> false, 'timeout' => 4]);
+        $client->setOptions(['strict'=> false, 'timeout' => 4]);
 
         $client->setHeaders(['content-type' => 'application/x-www-form-urlencoded']);
-        $client->setParameterPost('username', $this->helperConfig->getTokenUserName());
-        $client->setParameterPost('password', $this->helperConfig->getTokenPassword());
-        $client->setMethod(Zend_Http_Client::POST);
+        $postParams = [
+            'username' => $this->helperConfig->getTokenUserName(),
+            'password' => $this->helperConfig->getTokenPassword()
+        ];
+        $client->setParameterPost($postParams);
+        $client->setMethod(\Laminas\Http\Request::METHOD_POST);
 
-        $request = $client->request();
-        if ($request->getStatus() == 200) {
-            $requestBody = $request->getbody();
+        $response = $client->send();
+
+        if ($response->getStatusCode() == 200) {
+            $requestBody = $response->getBody();
             $result = $this->json->unserialize($requestBody);
             return $result['token'] ?? '';
+        } else {
+            $this->logger->info(
+                'Status Code: ' . $response->getStatusCode()
+            );
+            $this->logger->info(
+                'Body: ' . $response->getBody()
+            );
         }
         return '';
     }
 
     /**
      * @param $uri
-     * @return ZendClient
-     * @throws \Zend_Http_Client_Exception|LocalizedException
+     * @return LaminasClient
+     * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
      */
-    public function getClient($uri): ZendClient
+    protected function getClient($uri): LaminasClient
     {
         $client = $this->httpClientFactory->create();
-        $client->seturi($uri);
-        $client->setconfig(['strict'=> false, 'timeout' => 10]);
-
-        $client->setheaders(
+        $client->setUri($uri);
+        $options = [
+            'strict'=> false, 
+            'timeout' => 10,
+            'adapter' => 'Laminas\Http\Client\Adapter\Curl',
+        ];
+        $client->setOptions($options);
+        $client->setHeaders(
             [
+                'content-type' => 'application/json',
                 'Authorization' => 'Bearer ' . $this->getToken(),
                 'Idempotency-Key' => $this->generateUniqueToken()
             ]
         );
 
         return $client;
+    }
+
+    /**
+     * @param $uri
+     * @param $method
+     * @param $data
+     * @return mixed
+     * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
+     */
+    public function makeRequest($uri, $method, $data = null) {
+        $client = $this->getClient($uri);
+        
+        if($data) {
+            $client->setRawBody($data);
+        }
+        $client->setMethod($method);
+
+        $response = $client->send();
+
+        if ($response->getStatusCode() == 200 || $response->getStatusCode() == 201) {
+            $requestBody = $response->getBody();
+            $result = $this->json->unserialize($requestBody);
+            return $result;
+        } else {
+            $this->logger->info(
+                'URI: ' . $uri
+            );
+            $this->logger->info(
+                'Status Code: ' . $response->getStatusCode()
+            );
+            $this->logger->info(
+                'Body: ' . $response->getBody()
+            );
+        }
+        return [];
     }
 
     /**
