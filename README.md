@@ -6,11 +6,11 @@ The plugin integrates with Pagaleve API.
 https://pagaleve.stoplight.io/docs/public-apis/YXBpOjExOTgyMjU4-pagaleve-api
 
 ## Requirements
-This plugin supports:
-** 1.4.x **
+This plugin version 1.4.x supports:
 - PHP 8.1 version and higher.
 - Magento2 version 2.4.6 and higher.
-** 1.3.x**
+
+This plugin version 1.3.x supports:
 - PHP 7.3.0 version and higher.
 - Magento2 version 2.3.3 and higher.
 
