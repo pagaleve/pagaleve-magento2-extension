@@ -28,9 +28,12 @@ use Magento\Checkout\Model\Session as CheckoutSession;
 use Pagaleve\Payment\Model\Config\Source\PaymentAction;
 use Pagaleve\Payment\Model\Pagaleve;
 use Pagaleve\Payment\Logger\Logger;
+use Magento\Framework\Module\ModuleListInterface;
 
 class Data extends AbstractHelper
 {
+    const MODULE_NAME = 'Pagaleve_Payment';
+
     /** @var QuoteManagement $quoteManagement */
     protected QuoteManagement $quoteManagement;
 
@@ -58,6 +61,11 @@ class Data extends AbstractHelper
     /** @var Logger $logger */
     private Logger $logger;
 
+    /** 
+     * @var ModuleListInterface $_moduleList 
+     */
+    protected $_moduleList;
+
     /**
      * @param Context $context
      * @param QuoteManagement $quoteManagement
@@ -69,6 +77,7 @@ class Data extends AbstractHelper
      * @param OrderRepositoryInterface $orderRepository
      * @param Config $helperConfig
      * @param Logger $logger
+     * @param ModuleListInterface $moduleList
      */
     public function __construct(
         Context $context,
@@ -80,7 +89,8 @@ class Data extends AbstractHelper
         Transaction $transaction,
         OrderRepositoryInterface $orderRepository,
         Config $helperConfig,
-        Logger $logger
+        Logger $logger,
+        ModuleListInterface $moduleList
     ) {
         $this->quoteManagement = $quoteManagement;
         $this->checkoutSession = $checkoutSession;
@@ -91,6 +101,7 @@ class Data extends AbstractHelper
         $this->orderRepository = $orderRepository;
         $this->helperConfig = $helperConfig;
         $this->logger = $logger;
+        $this->_moduleList = $moduleList;
         parent::__construct($context);
     }
 
@@ -247,5 +258,10 @@ class Data extends AbstractHelper
     public function formatDate($date)
     {
         return date('Y-m-d H:i:s', strtotime($date));
+    }
+
+    public function getModuleVersion()
+    {
+        return $this->_moduleList->getOne(self::MODULE_NAME)['setup_version'];
     }
 }
