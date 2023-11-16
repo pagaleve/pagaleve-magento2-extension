@@ -25,14 +25,14 @@ use Pagaleve\Payment\Model\Request\Payment\RefundRequest;
 class CreditMemoRefund implements ObserverInterface
 {
     /** @var HelperConfig $helperConfig */
-    protected HelperConfig $helperConfig;
+    protected $helperConfig;
 
     /** @var RefundRequest $refundRequest */
-    private RefundRequest $refundRequest;
+    private $refundRequest;
 
     /**
      * @param HelperConfig $helperConfig
-     * @param RefundRequest $refundRequest
+     * @param $refundRequest
      */
     public function __construct(HelperConfig $helperConfig, RefundRequest $refundRequest)
     {

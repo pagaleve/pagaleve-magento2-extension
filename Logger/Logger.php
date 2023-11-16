@@ -16,8 +16,7 @@ use Pagaleve\Payment\Helper\Config as HelperConfig;
 
 class Logger extends \Monolog\Logger
 {
-    /** @var HelperConfig $helperConfig */
-    private HelperConfig $helperConfig;
+    private $helperConfig;
 
     /**
      * Logger constructor.

@@ -34,32 +34,32 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
     /** 
      * @var Logger $logger 
      */
-    protected Logger $logger;
+    protected $logger;
 
     /** 
      * @var OrderCollectionFactory $orderCollectionFactory 
      */
-    protected OrderCollectionFactory $orderCollectionFactory;
+    protected $orderCollectionFactory;
 
     /**
      * @var HelperConfig
      */
-    protected HelperConfig $helperConfig;
+    protected $helperConfig;
 
     /**
      * @var HelperData
      */
-    protected HelperData $helperData;
+    protected $helperData;
 
     /**
      * @var PaymentRequest
      */
-    protected PaymentRequest $paymentRequest;
+    protected $paymentRequest;
 
     /**
      * @var CheckoutRequest
      */
-    protected CheckoutRequest $checkoutRequest;
+    protected $checkoutRequest;
 
     /**
      * Constructor

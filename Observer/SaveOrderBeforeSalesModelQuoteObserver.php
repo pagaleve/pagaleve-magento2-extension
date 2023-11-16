@@ -24,7 +24,7 @@ class SaveOrderBeforeSalesModelQuoteObserver implements ObserverInterface
     /**
      * @var Copy
      */
-    protected Copy $objectCopyService;
+    protected $objectCopyService;
 
     /**
      * @param Copy $objectCopyService

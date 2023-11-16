@@ -16,14 +16,8 @@
                 <attribute type="activity_path">payment/pagaleve/active</attribute>
                 <label><![CDATA[<div class="pagaleve-payment-logo"></div><div class="pagaleve-payment-byline">Pagamento por parcelamento via PIX.<br/>Parcelamento em 4X via PIX.</div>]]></label>
                 <fieldset_css>complex pagaleve-payment-section</fieldset_css>
-                <frontend_model>Pagaleve\Payment\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
                 <group id="general" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                     <label>General</label>
-                    <!-- add a label that shows the module version -->
-                    <field id="module_version" type="label" sortOrder="0" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                        <label>Module Version</label>
-                        <frontend_model>Pagaleve\Payment\Block\Adminhtml\System\Config\Fieldset\Version</frontend_model>
-                    </field>
                     <field id="active" type="select" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Enabled</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

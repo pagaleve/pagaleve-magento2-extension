@@ -26,10 +26,10 @@ class Pagaleve extends Template implements BlockInterface
     protected $_template = 'Pagaleve_Payment::checkout/cart/widget/pagaleve.phtml';
 
     /** @var DataHelper $dataHelper */
-    private DataHelper $dataHelper;
+    private $dataHelper;
 
     /** @var PricingHelper $pricingHelper */
-    private PricingHelper $pricingHelper;
+    private $pricingHelper;
 
     /**
      * @param Template\Context $context

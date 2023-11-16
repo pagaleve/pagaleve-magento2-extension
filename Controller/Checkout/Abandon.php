@@ -23,22 +23,22 @@ class Abandon extends Action
     /**
      * @var OrderRepositoryInterface
      */
-    protected OrderRepositoryInterface $orderRepository;
+    protected $orderRepository;
 
     /**
      * @var CheckoutSession
      */
-    protected CheckoutSession $checkoutSession;
+    protected $checkoutSession;
 
     /**
      * @var CartRepositoryInterface
      */
-    protected CartRepositoryInterface $cartRepository;
+    protected $cartRepository;
 
     /**
      * @var QuoteFactory
      */
-    protected QuoteFactory $quoteFactory;
+    protected $quoteFactory;
 
     /**
      * Constructor

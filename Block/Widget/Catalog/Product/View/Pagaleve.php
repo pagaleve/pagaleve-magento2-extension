@@ -24,10 +24,10 @@ class Pagaleve extends Template implements BlockInterface
     protected $_template = 'Pagaleve_Payment::catalog/product/view/widget/pagaleve.phtml';
 
     /** @var CatalogHelper $catalogHelper */
-    private CatalogHelper $catalogHelper;
+    private $catalogHelper;
 
     /** @var PricingHelper $pricingHelper */
-    private PricingHelper $pricingHelper;
+    private $pricingHelper;
 
     /**
      * @param Template\Context $context

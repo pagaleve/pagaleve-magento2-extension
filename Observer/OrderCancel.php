@@ -26,13 +26,13 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 class OrderCancel implements ObserverInterface
 {
     /** @var HelperConfig $helperConfig */
-    protected HelperConfig $helperConfig;
+    protected $helperConfig;
 
     /** @var ReleaseRequest $releaseRequest */
-    private ReleaseRequest $releaseRequest;
+    private $releaseRequest;
 
     /** @var OrderRepositoryInterface $orderRepository */
-    private OrderRepositoryInterface $orderRepository;
+    private $orderRepository;
 
     /**
      * @param HelperConfig $helperConfig

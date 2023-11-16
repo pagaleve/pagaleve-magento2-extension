@@ -28,16 +28,16 @@ use Pagaleve\Payment\Model\Request\RequestAbstract;
 class CaptureRequest extends RequestAbstract
 {
     /** @var HelperData $helperData */
-    protected HelperData $helperData;
+    protected $helperData;
 
     /** @var ResourceInvoice $resourceInvoice */
-    protected ResourceInvoice $resourceInvoice;
+    protected $resourceInvoice;
 
     /** @var Invoice $invoice */
-    protected Invoice $invoice;
+    protected $invoice;
 
     /** @var Logger $logger */
-    private Logger $logger;
+    private $logger;
 
     /**
      * @param ZendClientFactory $httpClientFactory

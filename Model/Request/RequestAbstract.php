@@ -24,19 +24,19 @@ use Magento\Framework\Serialize\Serializer\Json;
 class RequestAbstract
 {
     /** @var json $json */
-    protected json $json;
+    protected $json;
 
     /** @var ZendClientFactory $httpClientFactory */
-    protected ZendClientFactory $httpClientFactory;
+    protected $httpClientFactory;
 
     /** @var HelperConfig $helperConfig */
-    protected HelperConfig $helperConfig;
+    protected $helperConfig;
 
     /** @var HelperData $helperData */
-    protected HelperData $helperData;
+    protected $helperData;
 
     /** @var Random $mathRandom */
-    protected Random $mathRandom;
+    protected $mathRandom;
 
     /**
      * @param ZendClientFactory $httpClientFactory
@@ -75,7 +75,8 @@ class RequestAbstract
         $client->setMethod(Zend_Http_Client::POST);
 
         $request = $client->request();
-        if ($request->getStatus() == 200) {
+        
+        if ($request->getStatus() == 200 || $request->getStatus() == 201) {
             $requestBody = $request->getbody();
             $result = $this->json->unserialize($requestBody);
             return $result['token'] ?? '';

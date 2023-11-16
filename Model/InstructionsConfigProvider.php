@@ -23,17 +23,17 @@ class InstructionsConfigProvider implements ConfigProviderInterface
     /**
      * @var string[]
      */
-    protected array $methodCodes = [Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE];
+    protected $methodCodes = [Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE];
 
     /**
      * @var AbstractMethod[]
      */
-    protected array $methods = [];
+    protected $methods = [];
 
     /**
      * @var Escaper
      */
-    protected Escaper $escaper;
+    protected $escaper;
 
     /**
      * @param PaymentHelper $paymentHelper

@@ -24,10 +24,10 @@ class CreditmemoViewAddButton
 {
 
     /** @var CreditmemoRepositoryInterface $creditMemoRepository */
-    private CreditmemoRepositoryInterface $creditMemoRepository;
+    private $creditMemoRepository;
 
     /** @var OrderRepository $orderRepository */
-    private OrderRepository $orderRepository;
+    private $orderRepository;
 
     /**
      * @param CreditmemoRepositoryInterface $creditMemoRepository

@@ -22,12 +22,12 @@ class Cancel implements HttpGetActionInterface
     /**
      * @var RedirectFactory
      */
-    protected RedirectFactory $resultRedirectFactory;
+    protected $resultRedirectFactory;
 
     /**
      * @var HelperData
      */
-    protected HelperData $helperData;
+    protected $helperData;
 
     /**
      * Constructor

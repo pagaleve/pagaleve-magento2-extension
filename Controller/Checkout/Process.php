@@ -25,17 +25,17 @@ class Process implements HttpGetActionInterface
     /**
      * @var RedirectFactory
      */
-    protected RedirectFactory $resultRedirectFactory;
+    protected $resultRedirectFactory;
 
     /**
      * @var HelperData
      */
-    protected HelperData $helperData;
+    protected $helperData;
 
     /**
      * @var CheckoutRequest
      */
-    protected CheckoutRequest $checkoutRequest;
+    protected $checkoutRequest;
 
     /**
      * Constructor

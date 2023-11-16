@@ -21,20 +21,20 @@ use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollection
 class CreateOrders
 {
     /** @var LoggerInterface $logger */
-    protected LoggerInterface $logger;
+    protected $logger;
 
     /** @var QuoteCollectionFactory $quoteCollectionFactory */
-    private QuoteCollectionFactory $quoteCollectionFactory;
+    private $quoteCollectionFactory;
 
     /**
      * @var HelperData
      */
-    protected HelperData $helperData;
+    protected $helperData;
 
     /**
      * @var PaymentRequest
      */
-    protected PaymentRequest $paymentRequest;
+    protected $paymentRequest;
 
     /**
      * Constructor

@@ -29,12 +29,12 @@ class Payment extends Fieldset
     /**
      * @var Config
      */
-    protected Config $_backendConfig;
+    protected $_backendConfig;
 
     /**
      * @var SecureHtmlRenderer
      */
-    private SecureHtmlRenderer $secureRenderer;
+    private $secureRenderer;
 
     /**
      * @param Context $context

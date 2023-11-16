@@ -33,20 +33,20 @@ class CheckoutRequest extends RequestAbstract
     /**
      * @var HelperData
      */
-    public HelperData $helperData;
+    public $helperData;
 
     /**
      * @var UrlInterface
      */
-    private UrlInterface $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @var ResourceQuote
      */
-    private ResourceQuote $resourceQuote;
+    private $resourceQuote;
 
     /** @var Logger $logger */
-    private Logger $logger;
+    private $logger;
 
     /** @var $order */
     protected $order = false;

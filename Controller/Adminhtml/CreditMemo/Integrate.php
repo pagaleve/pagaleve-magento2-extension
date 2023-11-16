@@ -22,19 +22,19 @@ use Psr\Log\LoggerInterface;
 class Integrate extends Action
 {
     /** @var LoggerInterface $logger */
-    private LoggerInterface $logger;
+    private $logger;
 
     /** @var HelperConfig $helperConfig */
-    protected HelperConfig $helperConfig;
+    protected $helperConfig;
 
     /** @var RefundRequest $refundRequest */
-    private RefundRequest $refundRequest;
+    private $refundRequest;
 
     /** @var CreditmemoRepositoryInterface $creditMemoRepository */
-    private CreditmemoRepositoryInterface $creditMemoRepository;
+    private $creditMemoRepository;
 
     /** @var OrderRepository $orderRepository */
-    private OrderRepository $orderRepository;
+    private $orderRepository;
 
     /**
      * @param Context $context

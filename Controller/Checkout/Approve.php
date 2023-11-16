@@ -27,32 +27,32 @@ class Approve implements HttpGetActionInterface
     /**
      * @var RedirectFactory
      */
-    protected RedirectFactory $resultRedirectFactory;
+    protected $resultRedirectFactory;
 
     /**
      * @var HelperData
      */
-    protected HelperData $helperData;
+    protected $helperData;
 
     /**
      * @var PaymentRequest
      */
-    protected PaymentRequest $paymentRequest;
+    protected $paymentRequest;
 
     /**
      * @var ManagerInterface
      */
-    protected ManagerInterface $messageManager;
+    protected $messageManager;
 
     /**
      * @var CheckoutRequest
      */
-    protected CheckoutRequest $checkoutRequest;
+    protected $checkoutRequest;
 
     /**
      * @var Session
      */
-    protected Session $checkoutSession;
+    protected $checkoutSession;
 
     /**
      * Constructor

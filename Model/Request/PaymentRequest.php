@@ -31,15 +31,15 @@ class PaymentRequest extends RequestAbstract
     /**
      * @var HelperData
      */
-    protected HelperData $helperData;
+    protected $helperData;
 
     /**
      * @var ResourceQuote
      */
-    protected ResourceQuote $resourceQuote;
+    protected $resourceQuote;
 
     /** @var Logger $logger */
-    private Logger $logger;
+    private $logger;
 
     /** @var $order */
     protected $order = false;

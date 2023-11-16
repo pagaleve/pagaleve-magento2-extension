@@ -25,10 +25,10 @@ use Pagaleve\Payment\Model\Request\Payment\CaptureRequest;
 class InvoicePay implements ObserverInterface
 {
     /** @var HelperConfig $helperConfig */
-    protected HelperConfig $helperConfig;
+    protected $helperConfig;
 
     /** @var CaptureRequest $captureRequest */
-    private CaptureRequest $captureRequest;
+    private $captureRequest;
 
     /**
      * @param HelperConfig $helperConfig

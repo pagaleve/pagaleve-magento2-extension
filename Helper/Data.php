@@ -35,31 +35,31 @@ class Data extends AbstractHelper
     const MODULE_NAME = 'Pagaleve_Payment';
 
     /** @var QuoteManagement $quoteManagement */
-    protected QuoteManagement $quoteManagement;
+    protected $quoteManagement;
 
     /** @var CheckoutSession $checkoutSession */
-    protected CheckoutSession $checkoutSession;
+    protected $checkoutSession;
 
     /** @var UrlInterface $urlBuilder */
-    private UrlInterface $urlBuilder;
+    private $urlBuilder;
 
     /** @var InvoiceService $invoiceService */
-    protected InvoiceService $invoiceService;
+    protected $invoiceService;
 
     /** @var Transaction $transaction */
-    protected Transaction $transaction;
+    protected $transaction;
 
     /** @var InvoiceSender $invoiceSender */
-    protected InvoiceSender $invoiceSender;
+    protected $invoiceSender;
 
     /** @var OrderRepositoryInterface $orderRepository */
-    protected OrderRepositoryInterface $orderRepository;
+    protected $orderRepository;
 
     /** @var Config $helperConfig */
-    private Config $helperConfig;
+    private $helperConfig;
 
     /** @var Logger $logger */
-    private Logger $logger;
+    private $logger;
 
     /** 
      * @var ModuleListInterface $_moduleList 

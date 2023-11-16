@@ -33,10 +33,10 @@ class PagaleveConfigProvider implements ConfigProviderInterface
     /**
      * @var Escaper
      */
-    protected Escaper $escaper;
+    protected $escaper;
 
     /** @var HelperConfig $helperConfig */
-    protected HelperConfig $helperConfig;
+    protected $helperConfig;
 
     /**
      * @param PaymentHelper $paymentHelper
