@@ -38,6 +38,11 @@
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>
                         <config_path>payment/pagaleve/order_status</config_path>
                     </field>
+                    <field id="payment_confirmed_status" type="select" sortOrder="50" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Payment Confirmed Status</label>
+                        <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
+                        <config_path>payment/pagaleve/payment_confirmed_status</config_path>
+                    </field>
                     <field id="retry_deadline" type="text" sortOrder="60" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Retry deadline</label>
                         <config_path>payment/pagaleve/retry_deadline</config_path>
@@ -189,6 +194,11 @@
                         <label>Status</label>
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>
                         <config_path>payment/pagaleve_upfront/order_status</config_path>
+                    </field>
+                    <field id="payment_confirmed_status" type="select" sortOrder="50" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Payment Confirmed Status</label>
+                        <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
+                        <config_path>payment/pagaleve_upfront/payment_confirmed_status</config_path>
                     </field>
                     <field id="retry_deadline" type="text" sortOrder="60" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Retry deadline</label>

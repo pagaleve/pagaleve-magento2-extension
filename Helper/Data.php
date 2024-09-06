@@ -29,6 +29,7 @@ use Pagaleve\Payment\Model\Config\Source\PaymentAction;
 use Pagaleve\Payment\Model\Pagaleve;
 use Pagaleve\Payment\Logger\Logger;
 use Magento\Framework\Module\ModuleListInterface;
+use Pagaleve\Payment\Model\PagaleveUpFront;
 
 class Data extends AbstractHelper
 {
@@ -199,8 +200,14 @@ class Data extends AbstractHelper
         $transactionSave->save();
         $this->invoiceSender->send($invoice);
 
+        $orderStatus = $this->helperConfig->getPaymentConfirmedStatus();
+        //if payment method code is upfront
+        if ($order->getPayment()->getMethod() == PagaleveUpFront::PAYMENT_METHOD_PAGALEVE_CODE) {
+            $orderStatus = $this->helperConfig->getUpfrontPaymentConfirmedStatus();
+        }
+
         $orderState = Order::STATE_PROCESSING;
-        $order->setState($orderState)->setStatus($orderState);
+        $order->setState($orderState)->setStatus($orderStatus);
         $order->addStatusHistoryComment(
                 __('Notified customer about invoice creation #%1.', $invoice->getId())
             )->setIsCustomerNotified(true);
