@@ -55,11 +55,11 @@ class Config extends AbstractHelper
 
     public const PAYMENT_STATUS = 'payment/pagaleve/order_status';
     public const PAYMENT_STATUS_NEW = 'payment/pagaleve/order_status_new';
-    public const PAYMENT_STATUS_PROCESSING = 'payment/pagaleve/order_status_processing';
+    public const PAYMENT_CONFIRMED_STATUS = 'payment/pagaleve/payment_confirmed_status';
 
     public const UPFRONT_PAYMENT_STATUS = 'payment/pagaleve_upfront/order_status';
     public const UPFRONT_PAYMENT_STATUS_NEW = 'payment/pagaleve_upfront/order_status_new';
-    public const UPFRONT_PAYMENT_STATUS_PROCESSING = 'payment/pagaleve_upfront/order_status_processing';
+    public const UPFRONT_PAYMENT_CONFIRMED_STATUS = 'payment/pagaleve_upfront/payment_confirmed_status';
 
     /**
      * @return bool
@@ -136,9 +136,17 @@ class Config extends AbstractHelper
     /**
      * @return mixed
      */
-    public function getPaymentStatusProcessing()
+    public function getPaymentConfirmedStatus()
     {
-        return $this->getStoreConfig(self::PAYMENT_STATUS_PROCESSING) ?? Order::STATE_PROCESSING;
+        return $this->getStoreConfig(self::PAYMENT_CONFIRMED_STATUS) ?? Order::STATE_PROCESSING;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpfrontPaymentConfirmedStatus()
+    {
+        return $this->getStoreConfig(self::UPFRONT_PAYMENT_CONFIRMED_STATUS) ?? Order::STATE_PROCESSING;
     }
 
     /**
