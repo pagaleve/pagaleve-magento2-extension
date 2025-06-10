@@ -12,11 +12,11 @@ This plugin version 1.4.x supports:
 
 This plugin version 1.3.x supports:
 - PHP 7.4.0 version and higher.
-- Magento 2 version 2.4.x and higher.
+- Magento 2 version 2.4.x to 2.4.5
 
 This plugin version 1.2.7 or higher supports:
 - PHP 7.3.0 version and higher.
-- Magento 2 version 2.3.4 and higher.
+- Magento 2 version 2.3.4 to 2.3.7.
 
 ## Installation
 To install our plugin through Composer::

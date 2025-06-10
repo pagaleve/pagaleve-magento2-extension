@@ -48,7 +48,7 @@
                         <config_path>payment/pagaleve/retry_deadline</config_path>
                     </field>
                     <!-- enable transparent checkout -->
-                    <field id="enabled_transparent_checkout" type="select" sortOrder="70" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <field id="enabled_transparent_checkout" type="select" sortOrder="200" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Enabled Transparent Checkout</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/pagaleve/enabled_transparent_checkout</config_path>
@@ -92,6 +92,10 @@
                             <field id="sandbox_mode">1</field>
                         </depends>
                         <config_path>payment/pagaleve/token_password_sandbox</config_path>
+                    </field>
+                    <field id="secret_key" type="text" sortOrder="70" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Secret Key</label>
+                        <config_path>payment/pagaleve/secret_key</config_path>
                     </field>
                     <field id="token_url" type="label" sortOrder="80" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Token Endpoint</label>
