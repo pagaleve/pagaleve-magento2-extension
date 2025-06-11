@@ -14,7 +14,7 @@ This plugin version 1.3.x supports:
 - PHP 7.4.0 version and higher.
 - Magento 2 version 2.4.x to 2.4.5
 
-This plugin version 1.2.7 or higher supports:
+This plugin version 1.2.x or higher supports:
 - PHP 7.3.0 version and higher.
 - Magento 2 version 2.3.4 to 2.3.7.
 
