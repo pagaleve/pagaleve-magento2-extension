@@ -18,6 +18,11 @@
                 <fieldset_css>complex pagaleve-payment-section</fieldset_css>
                 <group id="general" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                     <label>General</label>
+                    <!-- add a label that shows the module version -->
+                    <field id="module_version" type="label" sortOrder="0" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Module Version</label>
+                        <frontend_model>Pagaleve\Payment\Block\Adminhtml\System\Config\Fieldset\Version</frontend_model>
+                    </field>
                     <field id="active" type="select" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Enabled</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -81,6 +86,10 @@
                             <field id="sandbox_mode">1</field>
                         </depends>
                         <config_path>payment/pagaleve/token_password_sandbox</config_path>
+                    </field>
+                    <field id="secret_key" type="password" sortOrder="70" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Secret Key</label>
+                        <config_path>payment/pagaleve/secret_key</config_path>
                     </field>
                     <field id="token_url" type="label" sortOrder="80" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Token Endpoint</label>

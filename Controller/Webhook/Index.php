@@ -110,6 +110,61 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
         return true;
     }
 
+    protected function getSignatureFromRequest() {
+        // Tentar diferentes formas de capturar o header
+        $methods = [
+            'X-Pagaleve-Signature',
+            'HTTP_X_PAGALEVE_SIGNATURE'
+        ];
+        
+        $headers = $this->getRequest()->getHeaders();
+        foreach ($methods as $method) {
+            $signature = $this->getRequest()->getHeader($method);
+            if (!empty($signature)) {
+                return $signature;
+            }
+            
+            $signature = $this->getRequest()->getServer($method);
+            if (!empty($signature)) {
+                return $signature;
+            }
+            if ($headers->has($method)) {
+                return $headers->get($method)->getFieldValue();
+            }
+        }
+        
+        return null;
+    }
+        
+    /**
+     * return bool
+     */
+    protected function _isAllowed() {
+        $body = $this->getRequest()->getContent();
+        $secret = $this->helperConfig->getSecretKey();
+        if (empty($secret)) {
+            $this->logger->info('Secret key is not set');
+            return false;
+        }
+        $signatureHeader = $this->getSignatureFromRequest();
+        if (empty($signatureHeader)) {
+            $this->logger->info('Signature header is not set');
+            return false;
+        }
+        if (empty($body)) {
+            $this->logger->info('Request body is empty');
+            return false;
+        }
+        // Validate the signature
+        $signature = hash_hmac('sha256', $body, $secret);
+        // Use hash_equals to prevent timing attacks
+        if (!hash_equals($signature, $signatureHeader)) {
+            $this->logger->info('Pagaleve: Signature does not match');
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @return \Magento\Framework\Controller\Result\Json
      * @throws LocalizedException
@@ -119,6 +174,10 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
         //get body request
         $body = $this->getRequest()->getContent();
         $postData = json_decode($body, true);
+        if (!$this->_isAllowed()) {
+            $this->logger->info('Pagaleve: Unauthorized request');
+            return $this->jsonFactory->create()->setData(['error' => 'Unauthorized request']);
+        }
         if (empty($postData)) {
             $this->logger->info('Pagaleve: No data received');
             return $this->jsonFactory->create()->setData(['error' => 'No data received']);
