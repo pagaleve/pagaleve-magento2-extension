@@ -93,6 +93,10 @@
                         </depends>
                         <config_path>payment/pagaleve/token_password_sandbox</config_path>
                     </field>
+                    <field id="secret_key" type="password" sortOrder="70" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                        <label>Secret Key</label>
+                        <config_path>payment/pagaleve/secret_key</config_path>
+                    </field>
                     <field id="token_url" type="label" sortOrder="80" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
                         <label>Token Endpoint</label>
                         <depends>
