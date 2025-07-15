@@ -19,12 +19,18 @@ define([
         function retrieveAbandonedCart() {
             window.location.replace(config.retrieveAbandonedCartUrl);
         }
-    
+
         const checkoutURL = config.checkoutUrl;
         const urlWithParameter = checkoutURL + '&t=pagaleve';
-        initPagaLeve(urlWithParameter);
-        
+
         window.addEventListener('message', function (event) {
+            // Chama initPagaLeve quando o checkout transparente estiver pronto
+            if (event.data.type === 'pagaleve-transparent-checkout-ready') {
+                console.log('Checkout transparente pronto, inicializando PagaLeve...');
+                initPagaLeve(urlWithParameter);
+                return;
+            }
+
             if (event.data.action === 'pagaleve-checkout-finish') {
                 let pagaleveData = event.data.data;
 
@@ -35,5 +41,8 @@ define([
                 }
             }
         });
+
+        // Primeira chamada inicial
+        initPagaLeve(urlWithParameter);
     };
 });

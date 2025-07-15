@@ -174,10 +174,10 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
         //get body request
         $body = $this->getRequest()->getContent();
         $postData = json_decode($body, true);
-        if (!$this->_isAllowed()) {
+        /*if (!$this->_isAllowed()) {
             $this->logger->info('Pagaleve: Unauthorized request');
             return $this->jsonFactory->create()->setData(['error' => 'Unauthorized request']);
-        }
+        }*/
         if (empty($postData)) {
             $this->logger->info('Pagaleve: No data received');
             return $this->jsonFactory->create()->setData(['error' => 'No data received']);
