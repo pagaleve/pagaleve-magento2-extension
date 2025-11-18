@@ -1,0 +1,14 @@
+name: pagaleve-magento2-extension
+id: ari:cloud:compass:af8146a7-7c7d-42f3-a993-6920c682799e:component/fc7a1c13-9733-41ec-b591-0e5bff7a7284/9ae66cdd-c670-4057-99ea-214191838338
+description: null
+configVersion: 1
+typeId: SERVICE
+fields:
+  tier: 4
+links: []
+relationships:
+  DEPENDS_ON: []
+labels:
+  - language:less
+  - source:github
+customFields: null
