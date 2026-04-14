@@ -7,16 +7,16 @@
  *
  * @link        http://www.pagaleve.com.br
  */
-/**
- * @var $block \Pagaleve\Payment\Block\Info\Pagaleve
- */
+/** @var \Pagaleve\Payment\Block\Info\Pagaleve $block */
 $order = $block->getOrder();
 ?>
 <section class="admin__page-section order-view-billing-shipping">
     <div class="admin__page-section-content">
         <div class="admin__page-section-item order-payment-method pagaleve">
             <div class="admin__page-section-item-title">
-                <span class="title"><?= $block->escapeHtml(__('Pagaleve - PIX paid in 4x')) ?></span>
+                <img src="<?= $block->getViewFileUrl('Pagaleve_Payment::images/pagaleve-logo-completo-small.png') ?>" alt="Pagaleve" style="max-height: 40px; margin-bottom: 8px;" />
+                <br />
+                <span class="title"><?= $block->escapeHtml(__('Pix 4x sem juros – Pagaleve')) ?></span>
             </div>
             <div class="admin__page-section-item-content">
                 <div class="order-payment-additional" style="min-width: 400px;">
