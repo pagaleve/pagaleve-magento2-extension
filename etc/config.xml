@@ -17,7 +17,7 @@
                 <logger>1</logger>
 				<model>Pagaleve\Payment\Model\Pagaleve</model>
 				<order_status>pending</order_status>
-				<title>PIX 4x sem juros</title>
+				<title>Pix 4x sem juros – Pagaleve</title>
 				<allowspecific>0</allowspecific>
                 <group>offline</group>
                 <instructions>instructions</instructions>
