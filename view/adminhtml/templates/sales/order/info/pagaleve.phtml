@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author      FCamara - Formação e Consultoria <contato@fcamara.com.br>
  * @author      Guilherme Miguelete <guilherme.miguelete@fcamara.com.br>
@@ -16,7 +17,9 @@ $order = $block->getOrder();
     <div class="admin__page-section-content">
         <div class="admin__page-section-item order-payment-method pagaleve">
             <div class="admin__page-section-item-title">
-                <span class="title"><?= $block->escapeHtml(__('Pagaleve - PIX paid in 4x')) ?></span>
+                <img src="<?= $block->getViewFileUrl('Pagaleve_Payment::images/pagaleve-logo-completo-small.png') ?>" alt="Pagaleve" style="max-height: 40px; margin-bottom: 8px;" />
+                <br />
+                <span class="title"><?= $block->escapeHtml(__('Pix 4x sem juros – Pagaleve')) ?></span>
             </div>
             <div class="admin__page-section-item-content">
                 <div class="order-payment-additional" style="min-width: 400px;">
@@ -27,9 +30,9 @@ $order = $block->getOrder();
                 </div>
                 <?php if ($order->getData('pagaleve_expiration_date')) : ?>
                     <div class="order-payment-additional" style="min-width: 400px;">
-                    <strong><?= __('Release Date') ?>: </strong>
-                    <?= $block->formatDate($order->getData('pagaleve_expiration_date'), 3, true) ?>
-                </div>
+                        <strong><?= __('Release Date') ?>: </strong>
+                        <?= $block->formatDate($order->getData('pagaleve_expiration_date'), 3, true) ?>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
