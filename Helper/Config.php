@@ -51,8 +51,6 @@ class Config extends AbstractHelper
 
     public const PAYMENT_RETRY_DEADLINE = 'payment/pagaleve/retry_deadline';
 
-    public const PAYMENT_SECRET_KEY = 'payment/pagaleve/secret_key';
-
     public const PAYMENT_ACTIVE_TRANSPARENT_CHECKOUT = 'payment/pagaleve/enabled_transparent_checkout';
 
     public const PAYMENT_STATUS = 'payment/pagaleve/order_status';
@@ -187,14 +185,6 @@ class Config extends AbstractHelper
     public function getRetryDeadline()
     {
         return $this->getStoreConfig(self::PAYMENT_RETRY_DEADLINE) ?? 15;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSecretKey()
-    {
-        return $this->getStoreConfig(self::PAYMENT_SECRET_KEY);
     }
 
     /**
