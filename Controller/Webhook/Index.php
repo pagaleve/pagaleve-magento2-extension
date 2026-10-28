@@ -116,7 +116,9 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
         // Tentar diferentes formas de capturar o header
         $methods = [
             'X-Pagaleve-Signature',
-            'HTTP_X_PAGALEVE_SIGNATURE'
+            'HTTP_X_PAGALEVE_SIGNATURE',
+            'X-Signature',
+            'HTTP_X_SIGNATURE'
         ];
         
         $headers = $this->getRequest()->getHeaders();
