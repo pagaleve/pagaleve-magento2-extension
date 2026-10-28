@@ -23,6 +23,8 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Crypt\RSA;
 
 // class Index extends Action
 class Index extends Action implements CsrfAwareActionInterface, HttpPostActionInterface {
@@ -141,9 +143,9 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
      */
     protected function _isAllowed() {
         $body = $this->getRequest()->getContent();
-        $secret = $this->helperConfig->getSecretKey();
-        if (empty($secret)) {
-            $this->logger->info('Secret key is not set');
+        $publicKey = $this->paymentRequest->getPublicKey();
+        if (empty($publicKey)) {
+            $this->logger->info('Public key is not available');
             return false;
         }
         $signatureHeader = $this->getSignatureFromRequest();
@@ -155,11 +157,24 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
             $this->logger->info('Request body is empty');
             return false;
         }
-        // Validate the signature
-        $signature = hash_hmac('sha256', $body, $secret);
-        // Use hash_equals to prevent timing attacks
-        if (!hash_equals($signature, $signatureHeader)) {
-            $this->logger->info('Pagaleve: Signature does not match');
+        // Validate the signature (RSA-PSS SHA-256) with the Pagaleve public key
+        $signature = base64_decode((string) $signatureHeader, true);
+        if (!$signature) {
+            $this->logger->info('Pagaleve: Signature is not valid base64');
+            return false;
+        }
+        try {
+            $key = PublicKeyLoader::load($publicKey)
+                ->withPadding(RSA::SIGNATURE_PSS)
+                ->withHash('sha256')
+                ->withMGFHash('sha256')
+                ->withSaltLength(32);
+            if (!$key->verify($body, $signature)) {
+                $this->logger->info('Pagaleve: Signature does not match');
+                return false;
+            }
+        } catch (\Exception $e) {
+            $this->logger->info('Pagaleve: Invalid public key - ' . $e->getMessage());
             return false;
         }
         return true;
@@ -174,10 +189,12 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
         //get body request
         $body = $this->getRequest()->getContent();
         $postData = json_decode($body, true);
-        /*if (!$this->_isAllowed()) {
+        if (!$this->_isAllowed()) {
             $this->logger->info('Pagaleve: Unauthorized request');
-            return $this->jsonFactory->create()->setData(['error' => 'Unauthorized request']);
-        }*/
+            return $this->jsonFactory->create()
+                ->setHttpResponseCode(401)
+                ->setData(['error' => 'Unauthorized request']);
+        }
         if (empty($postData)) {
             $this->logger->info('Pagaleve: No data received');
             return $this->jsonFactory->create()->setData(['error' => 'No data received']);
