@@ -92,6 +92,29 @@ class PaymentRequest extends RequestAbstract
     }
 
     /**
+     * Endpoint returns the PEM as plain text, so makeRequest() (JSON) can't be used
+     *
+     * @return string
+     * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
+     */
+    public function getPublicKey(): string
+    {
+        $uri = $this->helperConfig->getPaymentUrl() . "/public-key";
+        $client = $this->getClient($uri);
+        $client->setMethod(\Laminas\Http\Request::METHOD_GET);
+
+        $response = $client->send();
+
+        if ($response->getStatusCode() == 200) {
+            return trim($response->getBody());
+        }
+        $this->logger->info('URI: ' . $uri);
+        $this->logger->info('Status Code: ' . $response->getStatusCode());
+        $this->logger->info('Body: ' . $response->getBody());
+        return '';
+    }
+
+    /**
      * @param $checkoutData
      * @return array
      * @throws \Laminas\Http\Client\Exception\RuntimeException|LocalizedException
