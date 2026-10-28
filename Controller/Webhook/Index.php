@@ -114,7 +114,9 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
         // Tentar diferentes formas de capturar o header
         $methods = [
             'X-Pagaleve-Signature',
-            'HTTP_X_PAGALEVE_SIGNATURE'
+            'HTTP_X_PAGALEVE_SIGNATURE',
+            'X-Signature',
+            'HTTP_X_SIGNATURE'
         ];
         
         $headers = $this->getRequest()->getHeaders();
@@ -141,9 +143,9 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
      */
     protected function _isAllowed() {
         $body = $this->getRequest()->getContent();
-        $secret = $this->helperConfig->getSecretKey();
-        if (empty($secret)) {
-            $this->logger->info('Secret key is not set');
+        $publicKey = $this->paymentRequest->getPublicKey();
+        if (empty($publicKey)) {
+            $this->logger->info('Public key is not available');
             return false;
         }
         $signatureHeader = $this->getSignatureFromRequest();
@@ -155,14 +157,56 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
             $this->logger->info('Request body is empty');
             return false;
         }
-        // Validate the signature
-        $signature = hash_hmac('sha256', $body, $secret);
-        // Use hash_equals to prevent timing attacks
-        if (!hash_equals($signature, $signatureHeader)) {
-            $this->logger->info('Pagaleve: Signature does not match');
+        // Validate the signature (RSA-PSS SHA-256) with the Pagaleve public key
+        $signature = base64_decode((string) $signatureHeader, true);
+        if (!$signature) {
+            $this->logger->info('Pagaleve: Signature is not valid base64');
+            return false;
+        }
+        try {
+            if (!$this->verifySignature($publicKey, $body, $signature)) {
+                $this->logger->info('Pagaleve: Signature does not match');
+                return false;
+            }
+        } catch (\Exception $e) {
+            $this->logger->info('Pagaleve: Invalid public key - ' . $e->getMessage());
             return false;
         }
         return true;
+    }
+
+    /**
+     * Magento 2.4.4+ ships phpseclib 3, Magento 2.4.0 - 2.4.3 ships phpseclib 2
+     *
+     * @param string $publicKey
+     * @param string $body
+     * @param string $signature
+     * @return bool
+     */
+    protected function verifySignature(string $publicKey, string $body, string $signature): bool
+    {
+        if (class_exists(\phpseclib3\Crypt\PublicKeyLoader::class)) {
+            return \phpseclib3\Crypt\PublicKeyLoader::load($publicKey)
+                ->withPadding(\phpseclib3\Crypt\RSA::SIGNATURE_PSS)
+                ->withHash('sha256')
+                ->withMGFHash('sha256')
+                ->withSaltLength(32)
+                ->verify($body, $signature);
+        }
+
+        $rsa = new \phpseclib\Crypt\RSA();
+        if (!$rsa->loadKey($publicKey)) {
+            throw new \RuntimeException('Unable to load public key');
+        }
+        $rsa->setSignatureMode(\phpseclib\Crypt\RSA::SIGNATURE_PSS);
+        $rsa->setHash('sha256');
+        $rsa->setMGFHash('sha256');
+        $rsa->setSaltLength(32);
+        // phpseclib 2 raises a notice instead of returning false when the signature size does not match the key
+        if (strlen($signature) !== (int) ceil($rsa->getSize() / 8)) {
+            return false;
+        }
+        return $rsa->verify($body, $signature);
     }
 
     /**
@@ -174,12 +218,12 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
         //get body request
         $body = $this->getRequest()->getContent();
         $postData = json_decode($body, true);
-        /*
         if (!$this->_isAllowed()) {
             $this->logger->info('Pagaleve: Unauthorized request');
-            return $this->jsonFactory->create()->setData(['error' => 'Unauthorized request']);
+            return $this->jsonFactory->create()
+                ->setHttpResponseCode(401)
+                ->setData(['error' => 'Unauthorized request']);
         }
-        */
             
         if (empty($postData)) {
             $this->logger->info('Pagaleve: No data received');
