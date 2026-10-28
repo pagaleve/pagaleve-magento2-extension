@@ -122,6 +122,30 @@ class PaymentRequest extends RequestAbstract
     }
 
     /**
+     * Endpoint returns the PEM as plain text, so the body is not unserialized
+     *
+     * @return string
+     * @throws LocalizedException
+     * @throws \Zend_Http_Client_Exception
+     */
+    public function getPublicKey(): string
+    {
+        $client = $this->getClient($this->helperConfig->getPaymentUrl() . "/public-key");
+        $client->setmethod(Zend_Http_Client::GET);
+
+        $request = $client->request();
+        $requestBody = $request->getbody();
+
+        if ($request->getstatus() == 200) {
+            return trim($requestBody);
+        }
+        $this->logger->info(
+            'PaymentRequestPublicKey: ' . $client->getUri() . ' - ' . $request->getstatus() . ' - ' . $requestBody
+        );
+        return '';
+    }
+
+    /**
      * @param $requestBody
      * @return array
      * @throws LocalizedException
