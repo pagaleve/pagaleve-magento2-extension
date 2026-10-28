@@ -202,6 +202,10 @@ class Index extends Action implements CsrfAwareActionInterface, HttpPostActionIn
         $rsa->setHash('sha256');
         $rsa->setMGFHash('sha256');
         $rsa->setSaltLength(32);
+        // phpseclib 2 raises a notice instead of returning false when the signature size does not match the key
+        if (strlen($signature) !== (int) ceil($rsa->getSize() / 8)) {
+            return false;
+        }
         return $rsa->verify($body, $signature);
     }
 
