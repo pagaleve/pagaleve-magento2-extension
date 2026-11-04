@@ -76,10 +76,10 @@ class Pagaleve extends AbstractMethod
         ScopeConfigInterface $scopeConfig,
         Logger $logger,
         CheckoutRequest $checkoutRequest,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = [],
-        DirectoryHelper $directory = null
+        ?DirectoryHelper $directory = null
     ) {
         $this->checkoutRequest = $checkoutRequest;
         parent::__construct(

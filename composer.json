@@ -3,7 +3,7 @@
     "description": "2",
     "homepage": "https://github.com/pagaleve/pagaleve-magento2-extension",
     "type": "magento2-module",
-    "version": "1.4.5",
+    "version": "1.4.6",
     "minimum-stability": "dev",
     "license": [
         "OSL-3.0",
@@ -19,6 +19,14 @@
             "email": "guilherme.miguelete@fcamara.com.br"
         }
     ],
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0||~8.4.0||~8.5.0",
+        "magento/framework": "^103.0.6",
+        "magento/module-payment": "^100.4.6",
+        "magento/module-sales": "^103.0.6",
+        "magento/module-checkout": "^100.4.6",
+        "magento/module-quote": "^101.2.6"
+    },
     "autoload": {
         "files": [
             "registration.php"
