@@ -255,7 +255,7 @@ class Data extends AbstractHelper
      */
     public function onlyNumbers($string): ?int
     {
-        return (int) preg_replace('/[^0-9]/', '', $string);
+        return (int) preg_replace('/[^0-9]/', '', (string) $string);
     }
 
     /**
@@ -264,7 +264,8 @@ class Data extends AbstractHelper
      */
     public function formatDate($date)
     {
-        return date('Y-m-d H:i:s', strtotime($date));
+        $timestamp = strtotime((string) $date);
+        return $timestamp === false ? false : date('Y-m-d H:i:s', $timestamp);
     }
 
     public function getModuleVersion()

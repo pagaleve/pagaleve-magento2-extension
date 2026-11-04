@@ -176,7 +176,7 @@ class RequestAbstract
      */
     protected function formatPhone($phone)
     {
-        $formattedPhone = preg_replace('/[^0-9]/', '', $phone);
+        $formattedPhone = preg_replace('/[^0-9]/', '', (string) $phone);
         return $formattedPhone;
         /*$matches = [];
         preg_match('/^([0-9]{2})([0-9]{4,5})([0-9]{4})$/', $formattedPhone, $matches);
