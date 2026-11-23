@@ -19,6 +19,8 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\QuoteManagement;
+use Magento\Quote\Model\ResourceModel\Quote as QuoteResource;
+use Magento\Sales\Model\ResourceModel\Order\Invoice as InvoiceResource;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Service\InvoiceService;
 use Magento\Framework\DB\Transaction;
@@ -79,6 +81,8 @@ class Data extends AbstractHelper
      * @param Config $helperConfig
      * @param Logger $logger
      * @param ModuleListInterface $moduleList
+     * @param QuoteResource $quoteResource
+     * @param InvoiceResource $invoiceResource
      */
     public function __construct(
         Context $context,
@@ -91,7 +95,9 @@ class Data extends AbstractHelper
         OrderRepositoryInterface $orderRepository,
         Config $helperConfig,
         Logger $logger,
-        ModuleListInterface $moduleList
+        ModuleListInterface $moduleList,
+        private readonly QuoteResource $quoteResource,
+        private readonly InvoiceResource $invoiceResource
     ) {
         $this->quoteManagement = $quoteManagement;
         $this->checkoutSession = $checkoutSession;
@@ -136,7 +142,8 @@ class Data extends AbstractHelper
         $quote->setPaymentMethod(Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE);
         $quote->getPayment()->importData(['method' => Pagaleve::PAYMENT_METHOD_PAGALEVE_CODE]);
         $quote->setData('trigger_recollect', 1)->setTotalsCollectedFlag(true);
-        $quote->collectTotals()->save();
+        $quote->collectTotals();
+        $this->quoteResource->save($quote);
 
         if ($checkoutData['amount'] != $this->formatAmount($quote->getGrandTotal())) {
             $this->logger->info(
@@ -195,7 +202,7 @@ class Data extends AbstractHelper
             $invoice->setData('pagaleve_capture_id', $checkoutData['id']);
         }
 
-        $invoice->save();
+        $this->invoiceResource->save($invoice);
         $transactionSave = $this->transaction->addObject($invoice)->addObject($invoice->getOrder());
         $transactionSave->save();
         $this->invoiceSender->send($invoice);

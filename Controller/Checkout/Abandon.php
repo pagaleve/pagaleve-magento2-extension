@@ -15,6 +15,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Quote\Model\QuoteFactory;
+use Magento\Quote\Model\ResourceModel\Quote as QuoteResource;
 use Magento\Quote\Api\CartRepositoryInterface;
 
 class Abandon extends Action
@@ -47,13 +48,15 @@ class Abandon extends Action
      * @param CheckoutSession $checkoutSession
      * @param CartRepositoryInterface $cartRepository
      * @param QuoteFactory $quoteFactory
+     * @param QuoteResource $quoteResource
      */
     public function __construct(
         Context $context,
         OrderRepositoryInterface $orderRepository,
         CheckoutSession $checkoutSession,
         CartRepositoryInterface $cartRepository,
-        QuoteFactory $quoteFactory
+        QuoteFactory $quoteFactory,
+        private readonly QuoteResource $quoteResource
     ) {
         $this->orderRepository = $orderRepository;
         $this->checkoutSession = $checkoutSession;
@@ -69,7 +72,8 @@ class Abandon extends Action
         try {
             $order = $this->orderRepository->get($orderId);
             $quoteId = $order->getQuoteId();
-            $quote = $this->quoteFactory->create()->load($quoteId);
+            $quote = $this->quoteFactory->create();
+            $this->quoteResource->load($quote, $quoteId);
             $quote->setIsActive(true)->setReservedOrderId(null);
             $this->cartRepository->save($quote);
             $this->checkoutSession->replaceQuote($quote);
@@ -77,6 +81,6 @@ class Abandon extends Action
         } catch (NoSuchEntityException $e) {
             $redirectUrl = '/';
         }
-        $this->_redirect($redirectUrl);
+        return $this->_redirect($redirectUrl);
     }
 }

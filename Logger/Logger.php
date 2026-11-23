@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace Pagaleve\Payment\Logger;
 
+use Magento\Framework\Logger\Monolog;
 use Pagaleve\Payment\Helper\Config as HelperConfig;
 
-class Logger extends \Monolog\Logger
+class Logger extends Monolog
 {
     /** @var HelperConfig $helperConfig */
     private HelperConfig $helperConfig;
